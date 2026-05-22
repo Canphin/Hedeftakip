@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="description" content="Finansal Hedef Takip Paneli - Hedeflerini belirle, birikimini takip et, başarıya ulaş!">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Hedef Paneli">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+    <title>HEDEF PANELİ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js">
+    </script>
+
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --surface2: #16161f;
+            --border: #1e1e2e;
+            --accent: #f5a623;
+            --accent2: #e05c2f;
+            --accent3: #3dd68c;
+            --text: #e8e8f0;
+            --muted: #5a5a7a;
+            --danger: #e05c2f;
+            --gold: #f5a623;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(245, 166, 35, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245, 166, 35, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(245, 166, 35, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 16px 100px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Skeleton Loader */
+        .skeleton-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .skeleton-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .skeleton-content {
+            text-align: center;
+        }
+
+        .skeleton-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .skeleton-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 4px;
+            color: var(--accent);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Glitch Effect */
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-2px, 2px);
+            }
+            40% {
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                transform: translate(2px, 2px);
+            }
+            80% {
+                transform: translate(2px, -2px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        .glitch-active {
+            animation: glitch 0.3s ease-in-out;
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-effect {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* HEADER */
+        header {
+            padding: 32px 0 24px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .logo-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(40px, 8vw, 72px);
+            line-height: 1;
+            color: var(--text);
+            letter-spacing: 2px;
+        }
+
+        .logo-title span {
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-btn {
+            padding: 8px 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .header-btn:hover {
+            border-color: var(--accent);
+            background: rgba(245, 166, 35, 0.1);
+        }
+
+        .header-btn:active {
+            transform: scale(0.95);
+        }
+
+        .current-date-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 2px;
+        }
+
+        .current-date-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(18px, 3vw, 24px);
+            color: var(--text);
+        }
+
+        /* QUOTE BANNER */
+        .quote-banner {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 12px 12px 0;
+            padding: 16px;
+            margin-bottom: 28px;
+            position: relative;
+            overflow: hidden;
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .quote-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-content {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        #quote-text {
+            font-size: 13px;
+            font-style: italic;
+            color: var(--text);
+            line-height: 1.5;
+            opacity: 0;
+            transition: opacity 0.5s;
+            word-wrap: break-word;
+        }
+
+        #quote-text.visible {
+            opacity: 1;
+        }
+
+        #quote-author {
+            font-size: 11px;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        .quote-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            text-align: right;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-timer-bar {
+            width: 32px;
+            height: 2px;
+            background: var(--border);
+            border-radius: 1px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .quote-timer-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 1px;
+            transition: width 1s linear;
+        }
+
+        /* STATS ROW */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) rotateX(5deg);
+            border-color: var(--accent);
+        }
+
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(24px, 5vw, 32px);
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stat-sub {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        /* SECTION TITLE */
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(22px, 4vw, 28px);
+            letter-spacing: 2px;
+            color: var(--text);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* ADD FORM */
+        .add-form {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 28px;
+            transition: border-color 0.3s, transform 0.2s;
+        }
+
+        .add-form:hover {
+            transform: translateY(-2px);
+            border-color: rgba(245, 166, 35, 0.3);
+        }
+
+        .add-form:focus-within {
+            border-color: rgba(245, 166, 35, 0.4);
+            box-shadow: 0 0 40px rgba(245, 166, 35, 0.06);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .form-row2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        input,
+        select {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 11px 12px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a5a7a' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+
+        select option {
+            background: var(--surface2);
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            border-radius: 10px;
+            color: #0a0a0f;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245, 166, 35, 0.3);
+        }
+
+        .add-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* CATEGORY PILLS */
+        .cat-pills {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .cat-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-pill {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'DM Sans', sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .cat-pill:hover {
+            transform: translateY(-2px);
+        }
+
+        .cat-pill.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(245, 166, 35, 0.08);
+            transform: scale(1.05);
+        }
+
+        /* GOALS GRID */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .goal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            animation: cardIn 0.5s ease both;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .goal-card:hover {
+            transform: translateY(-4px) rotateX(2deg);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(245, 166, 35, 0.3);
+        }
+
+        .goal-card.completed {
+            border-color: rgba(61, 214, 140, 0.3);
+            background: linear-gradient(135deg, var(--surface), rgba(61, 214, 140, 0.05));
+        }
+
+        .goal-header {
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .goal-cat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .goal-menu-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .goal-menu-btn:hover {
+            color: var(--text);
+            background: var(--surface2);
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .goal-body {
+            padding: 0 16px 16px;
+        }
+
+        .goal-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: 1px;
+            color: var(--text);
+            margin-bottom: 3px;
+            line-height: 1.1;
+            word-break: break-word;
+        }
+
+        .goal-note {
+            font-size: 11px;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        .progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .progress-pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -2px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .goal-card.completed .progress-fill {
+            background: linear-gradient(90deg, var(--accent3), #2ab87d);
+        }
+
+        .goal-card.completed .progress-fill::after {
+            background: var(--accent3);
+            box-shadow: 0 0 10px var(--accent3);
+        }
+
+        .goal-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .goal-stat {
+            background: var(--surface2);
+            border-radius: 8px;
+            padding: 8px 10px;
+            transition: transform 0.2s;
+        }
+
+        .goal-stat:hover {
+            transform: scale(1.05);
+        }
+
+        .goal-stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            letter-spacing: 1.5px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .goal-stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .goal-stat-value.highlight {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .savings-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .savings-input {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 13px;
+            min-width: 0;
+        }
+
+        .savings-btn {
+            padding: 8px 12px;
+            background: rgba(61, 214, 140, 0.15);
+            border: 1px solid rgba(61, 214, 140, 0.3);
+            border-radius: 8px;
+            color: var(--accent3);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .savings-btn:hover {
+            background: rgba(61, 214, 140, 0.25);
+            border-color: var(--accent3);
+            transform: scale(1.05);
+        }
+
+        .savings-btn:active {
+            transform: scale(0.95);
+        }
+
+        .goal-deadline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .goal-deadline.urgent {
+            color: var(--danger);
+        }
+        .goal-deadline.soon {
+            color: var(--gold);
+        }
+        .goal-deadline.safe {
+            color: var(--accent3);
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 20px;
+            border: 1px dashed var(--border);
+            border-radius: 16px;
+        }
+
+        .empty-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .empty-sub {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* COMPLETED BADGE */
+        .completed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: rgba(61, 214, 140, 0.15);
+            border: 1px solid rgba(61, 214, 140, 0.3);
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 10px;
+            color: var(--accent3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.open .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .btn-delete,
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete {
+            background: rgba(224, 92, 47, 0.15);
+            border: 1px solid rgba(224, 92, 47, 0.3);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover {
+            background: rgba(224, 92, 47, 0.25);
+            border-color: var(--danger);
+        }
+
+        .btn-cancel {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--muted);
+        }
+
+        /* BADGES PANEL */
+        .badges-panel {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            bottom: 0;
+            width: 340px;
+            max-width: 90vw;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            z-index: 90;
+            padding: 20px;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .badges-panel.open {
+            right: 0;
+        }
+
+        .badges-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 89;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .badges-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .badge-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--surface2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            opacity: 0.3;
+            filter: grayscale(1);
+            transition: all 0.3s;
+        }
+
+        .badge-item.unlocked {
+            opacity: 1;
+            filter: grayscale(0);
+            border-color: var(--accent);
+        }
+
+        .badge-icon {
+            font-size: 32px;
+        }
+
+        .badge-info {
+            flex: 1;
+        }
+
+        .badge-name {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .badge-desc {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent3);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text);
+            z-index: 999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* MUSIC FAB */
+        .music-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 80;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .music-popup {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            min-width: 220px;
+            max-width: 280px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .music-popup.open {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0) scale(1);
+        }
+
+        .music-popup-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+            color: var(--text);
+        }
+
+        .music-popup-subtitle {
+            font-size: 9px;
+            color: var(--accent2);
+            margin-bottom: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+        }
+
+        .music-controls {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .music-ctrl-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            text-align: center;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .music-ctrl-btn:hover {
+            border-color: var(--accent);
+            background: rgba(245, 166, 35, 0.1);
+        }
+
+        .music-ctrl-btn.play-btn {
+            background: rgba(61, 214, 140, 0.15);
+            border-color: rgba(61, 214, 140, 0.3);
+            color: var(--accent3);
+            font-weight: 600;
+        }
+
+        .music-ctrl-btn.play-btn.paused {
+            background: rgba(245, 166, 35, 0.15);
+            border-color: rgba(245, 166, 35, 0.3);
+            color: var(--accent);
+        }
+
+        .music-status {
+            font-size: 10px;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .music-volume-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 4px;
+        }
+
+        .music-volume-icon {
+            font-size: 12px;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .music-volume {
+            flex: 1;
+            accent-color: var(--accent);
+            height: 4px;
+            cursor: pointer;
+        }
+
+        .music-fab-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .music-fab-btn:hover {
+            transform: scale(1.1);
+            border-color: var(--accent);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .music-fab-btn.playing {
+            animation: musicPulse 2s ease-in-out infinite;
+            border-color: var(--accent3);
+            background: rgba(61, 214, 140, 0.1);
+        }
+
+        .music-fab-btn.paused-state {
+            border-color: var(--accent);
+            background: rgba(245, 166, 35, 0.1);
+        }
+
+        @keyframes musicPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(61, 214, 140, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(61, 214, 140, 0);
+            }
+        }
+
+        .music-fab-btn .equalizer {
+            display: none;
+            gap: 2px;
+            align-items: flex-end;
+            height: 16px;
+        }
+
+        .music-fab-btn.playing .music-icon-text {
+            display: none;
+        }
+
+        .music-fab-btn.playing .equalizer {
+            display: flex;
+        }
+
+        .eq-bar {
+            width: 3px;
+            background: var(--accent3);
+            border-radius: 2px;
+            animation: eqAnim 0.8s ease-in-out infinite;
+        }
+
+        .eq-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .eq-bar:nth-child(2) { height: 14px; animation-delay: 0.2s; }
+        .eq-bar:nth-child(3) { height: 6px; animation-delay: 0.4s; }
+        .eq-bar:nth-child(4) { height: 12px; animation-delay: 0.1s; }
+
+        @keyframes eqAnim {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.4); }
+        }
+
+        /* IMPORT/EXPORT */
+        .import-input {
+            display: none;
+        }
+
+        /* CHART MODAL */
+        .chart-modal {
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        #progressChart {
+            width: 100% !important;
+            height: 300px !important;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+        /* RESPONSIVE */
+        @media (min-width: 480px) {
+            .container { padding: 0 20px 100px; }
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .form-row2 { grid-template-columns: 1fr 1fr; }
+            .add-form { padding: 24px; }
+            .quote-banner { padding: 18px 20px; }
+            #quote-text { font-size: 14px; }
+        }
+
+        @media (min-width: 640px) {
+            .stats-row { grid-template-columns: repeat(4, 1fr); }
+            .goals-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+        }
+
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+            .form-row2 { grid-template-columns: 1fr 1fr 1fr; }
+            .toast { left: auto; right: 20px; bottom: 30px; }
+        }
+
+        @media (min-width: 1024px) {
+            .container { padding: 0 24px 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SKELETON LOADER -->
+    <div class="skeleton-loader" id="skeleton-loader">
+        <div class="skeleton-content">
+            <div class="skeleton-spinner"></div>
+            <div class="skeleton-text">HEDEF PANELİ</div>
+        </div>
+    </div>
+
+    <!-- BADGES BACKDROP -->
+    <div class="badges-backdrop" id="badges-backdrop" onclick="toggleBadges()"></div>
+
+    <!-- BADGES PANEL -->
+    <div class="badges-panel" id="badges-panel">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:20px;">🏆 BAŞARILAR</h3>
+        <div id="badges-list"></div>
+        <button class="btn-cancel" style="width:100%;margin-top:16px;" onclick="toggleBadges()">KAPAT</button>
+    </div>
+
+    <!-- GİZLİ YOUTUBE PLAYER -->
+    <div id="youtube-player-container" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;">
+        <div id="youtube-player"></div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <span class="logo-eyebrow">// finansal planlama v2.0</span>
+                <h1 class="logo-title">HEDEF <span>PANELİ</span></h1>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn ripple" onclick="exportData()" title="Dışa Aktar">📤</button>
+                <button class="header-btn ripple" onclick="document.getElementById('import-input').click()" title="İçe Aktar">📥</button>
+                <input type="file" id="import-input" class="import-input" accept=".json" onchange="importData(event)">
+                <button class="header-btn ripple" onclick="showChart()" title="Grafik">📊</button>
+                <button class="header-btn ripple" onclick="toggleBadges()" title="Rozetler">🏆</button>
+                <div style="text-align:right;">
+                    <div class="current-date-text">BUGÜN</div>
+                    <div class="current-date-value" id="current-date"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- QUOTE BANNER -->
+        <div class="quote-banner">
+            <span class="quote-icon">💡</span>
+            <div class="quote-content">
+                <div id="quote-text">Yükleniyor...</div>
+                <div id="quote-author"></div>
+            </div>
+            <div class="quote-timer">
+                <div id="quote-countdown">15s</div>
+                <div class="quote-timer-bar">
+                    <div class="quote-timer-fill" id="quote-bar" style="width:100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS ROW -->
+        <div class="stats-row">
+            <div class="stat-card ripple"><div class="stat-label">Toplam Hedef</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">hedef kayıtlı</div></div>
+            <div class="stat-card ripple"><div class="stat-label">Tamamlanan</div><div class="stat-value" id="stat-done" style="color:var(--accent3)">0</div><div class="stat-sub">hedef tamamlandı</div></div>
+            <div class="stat-card ripple"><div class="stat-label">Toplam Hedef ₺</div><div class="stat-value" id="stat-amount">0</div><div class="stat-sub">toplam para</div></div>
+            <div class="stat-card ripple"><div class="stat-label">Günlük İhtiyaç</div><div class="stat-value" id="stat-daily" style="color:var(--accent2)">0</div><div class="stat-sub">₺/gün biriktir</div></div>
+        </div>
+
+        <!-- ADD GOAL FORM -->
+        <div class="section-title">🎯 YENİ HEDEF EKLE</div>
+        <div class="add-form">
+            <div class="form-grid">
+                <div class="form-group"><label>Hedef Adı</label><input type="text" id="inp-name" placeholder="Örn: Yeni Araba, Tatil..." autocomplete="off" /></div>
+                <div class="form-group"><label>Hedef Tutarı (₺)</label><input type="number" id="inp-amount" placeholder="50000" min="1" inputmode="numeric" /></div>
+                <div class="form-group"><label>Süre (Ay)</label><input type="number" id="inp-months" placeholder="12" min="1" max="360" inputmode="numeric" /></div>
+                <div class="form-group"><label>Kategori</label><select id="inp-category"><option value="🚗 Araç">🚗 Araç</option><option value="🏠 Ev/Konut">🏠 Ev/Konut</option><option value="✈️ Tatil">✈️ Tatil</option><option value="💻 Teknoloji">💻 Teknoloji</option><option value="📈 Yatırım">📈 Yatırım</option><option value="🎓 Eğitim">🎓 Eğitim</option><option value="💪 Sağlık">💪 Sağlık</option><option value="🎮 Eğlence">🎮 Eğlence</option><option value="👔 Giyim">👔 Giyim</option><option value="🌟 Diğer">🌟 Diğer</option></select></div>
+            </div>
+            <div class="form-row2">
+                <div class="form-group"><label>Öncelik (1-3 ★)</label><select id="inp-priority"><option value="1">★ Düşük</option><option value="2">★★ Orta</option><option value="3" selected>★★★ Yüksek</option></select></div>
+                <div class="form-group"><label>Mevcut Birikim (₺)</label><input type="number" id="inp-saved" placeholder="0" min="0" inputmode="numeric" /></div>
+                <div class="form-group"><label>Not (İsteğe Bağlı)</label><input type="text" id="inp-note" placeholder="Kısa bir not..." autocomplete="off" /></div>
+            </div>
+            <button class="add-btn ripple" onclick="addGoal()">+ HEDEF EKLE</button>
+        </div>
+
+        <!-- FILTER PILLS -->
+        <div class="cat-pills" id="cat-pills">
+            <button class="cat-pill active" onclick="filterCat('all', this)">🔥 Tümü</button>
+            <button class="cat-pill" onclick="filterCat('active', this)">⏳ Devam Eden</button>
+            <button class="cat-pill" onclick="filterCat('completed', this)">✅ Tamamlanan</button>
+        </div>
+
+        <!-- GOALS GRID -->
+        <div class="section-title">📋 HEDEFLERİM</div>
+        <div class="goals-grid" id="goals-grid"></div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal"><div class="modal-title">🗑️ HEDEFİ SİL</div><p style="color:var(--muted);font-size:13px;" id="modal-msg"></p><div class="modal-actions"><button class="btn-cancel ripple" onclick="closeDeleteModal()">İPTAL</button><button class="btn-delete ripple" onclick="confirmDelete()">SİL</button></div></div>
+    </div>
+
+    <!-- CHART MODAL -->
+    <div class="modal-overlay" id="chart-modal-overlay">
+        <div class="modal chart-modal"><div class="modal-title">📊 İLERLEME GRAFİĞİ</div><canvas id="progressChart"></canvas><div class="modal-actions"><button class="btn-cancel ripple" onclick="document.getElementById('chart-modal-overlay').classList.remove('open')">KAPAT</button></div></div>
+    </div>
+
+    <!-- MUSIC FAB - SADECE YOUTUBE -->
+    <div class="music-fab">
+        <div class="music-popup" id="music-popup">
+            <div class="music-popup-title">🎮 GAMING EDM 2026</div>
+            <div class="music-popup-subtitle">YouTube • Arka Planda Gizli</div>
+            <div class="music-status" id="music-status">⏳ Yükleniyor...</div>
+            <div class="music-controls">
+                <button class="music-ctrl-btn play-btn" id="music-btn-play" onclick="togglePlayPause()">▶️ Oynat</button>
+                <button class="music-ctrl-btn" onclick="restartMusic()" title="Başa Sar">🔄</button>
+            </div>
+            <div class="music-volume-row">
+                <span class="music-volume-icon">🔈</span>
+                <input type="range" class="music-volume" id="music-volume" min="0" max="100" value="30" onchange="setVolume(this.value)">
+                <span class="music-volume-icon">🔊</span>
+            </div>
+        </div>
+        <button class="music-fab-btn ripple" id="music-fab-btn" onclick="toggleMusicPopup()" title="Müzik Kontrolü">
+            <span class="music-icon-text">🎵</span>
+            <div class="equalizer"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+        </button>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ==================== SERVICE WORKER ====================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('✅ SW:', reg.scope))
+                    .catch(err => console.log('❌ SW:', err));
+            });
+        }
+
+        // ==================== SKELETON ====================
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('skeleton-loader').classList.add('hidden'), 1500);
+        });
+
+        // ==================== RIPPLE ====================
+        document.addEventListener('click', function(e) {
+            const el = e.target.closest('.ripple');
+            if (!el) return;
+            const r = document.createElement('span');
+            r.className = 'ripple-effect';
+            const rect = el.getBoundingClientRect();
+            const s = Math.max(rect.width, rect.height);
+            r.style.width = r.style.height = s + 'px';
+            r.style.left = (e.clientX - rect.left - s / 2) + 'px';
+            r.style.top = (e.clientY - rect.top - s / 2) + 'px';
+            el.appendChild(r);
+            r.addEventListener('animationend', () => r.remove());
+        });
+
+        // ==================== SOUND ====================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playBeep(freq, type, dur, vol = 0.1) {
+            initAudio();
+            if (!audioCtx) return;
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = type || 'sine';
+            o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            g.gain.setValueAtTime(vol, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.start(audioCtx.currentTime);
+            o.stop(audioCtx.currentTime + dur);
+        }
+
+        function playSound(type) {
+            initAudio();
+            switch (type) {
+                case 'click': playBeep(600, 'sine', 0.08, 0.08); break;
+                case 'success': playBeep(523, 'sine', 0.15, 0.1); setTimeout(() => playBeep(659, 'sine', 0.15, 0.1), 100);
+                    setTimeout(() => playBeep(784, 'sine', 0.15, 0.2), 200); break;
+                case 'delete': playBeep(200, 'sawtooth', 0.15, 0.06); break;
+                case 'add': playBeep(400, 'triangle', 0.1, 0.08);
+                    setTimeout(() => playBeep(600, 'triangle', 0.1, 0.08), 80); break;
+            }
+        }
+
+        // ==================== YOUTUBE PLAYER (SADECE) ====================
+        const YT_VIDEO_ID = 'PP2Uvesx4ls'; // Gaming EDM 2026
+        let youtubePlayer = null;
+        let isMusicPlaying = false;
+        let musicVolume = 30;
+        let ytReady = false;
+        let autoPlayDone = false;
+
+        function loadYouTubeAPI() {
+            if (document.getElementById('yt-api')) return;
+            const tag = document.createElement('script');
+            tag.id = 'yt-api';
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(tag);
+        }
+
+        function onYouTubeIframeAPIReady() {
+            ytReady = true;
+            console.log('✅ YouTube API hazır');
+            createPlayer();
+        }
+
+        function createPlayer() {
+            if (!ytReady || youtubePlayer) return;
+            youtubePlayer = new YT.Player('youtube-player', {
+                height: '1',
+                width: '1',
+                videoId: YT_VIDEO_ID,
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'enablejsapi': 1,
+                    'fs': 0,
+                    'iv_load_policy': 3,
+                    'modestbranding': 1,
+                    'playsinline': 1,
+                    'rel': 0,
+                    'showinfo': 0,
+                    'mute': 0,
+                    'loop': 1,
+                    'playlist': YT_VIDEO_ID
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError,
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            console.log('✅ YouTube Player hazır');
+            event.target.setVolume(musicVolume);
+            event.target.setPlaybackQuality('small');
+            updateStatus('✅ Hazır • Bekleniyor...');
+
+            // Otomatik başlat
+            if (!autoPlayDone) {
+                autoPlayDone = true;
+                setTimeout(() => {
+                    tryAutoPlay();
+                }, 800);
+            }
+        }
+
+        function tryAutoPlay() {
+            if (!youtubePlayer || !ytReady) {
+                setTimeout(tryAutoPlay, 1000);
+                return;
+            }
+            try {
+                youtubePlayer.playVideo();
+                console.log('🎵 Otomatik oynatma denendi');
+            } catch (e) {
+                console.log('⚠️ Otomatik oynatma hatası:', e);
+                updateStatus('🟠 Tıkla başlat');
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            switch (event.data) {
+                case 1: // Oynuyor
+                    isMusicPlaying = true;
+                    document.getElementById('music-fab-btn').classList.add('playing');
+                    document.getElementById('music-fab-btn').classList.remove('paused-state');
+                    updateStatus('🟢 Çalıyor • Gaming EDM 2026');
+                    updatePlayBtn();
+                    break;
+                case 2: // Duraklatıldı
+                    isMusicPlaying = false;
+                    document.getElementById('music-fab-btn').classList.remove('playing');
+                    document.getElementById('music-fab-btn').classList.add('paused-state');
+                    updateStatus('🟠 Duraklatıldı');
+                    updatePlayBtn();
+                    break;
+                case 0: // Bitti → loop
+                    if (youtubePlayer) youtubePlayer.playVideo();
+                    break;
+                case -1: // Başlamadı
+                    updateStatus('⏳ Hazır • Başlat için tıkla');
+                    updatePlayBtn();
+                    break;
+            }
+        }
+
+        function onPlayerError(event) {
+            console.log('❌ YouTube hatası:', event.data);
+            updateStatus('🔴 Hata • Tekrar dene');
+            isMusicPlaying = false;
+            document.getElementById('music-fab-btn').classList.remove('playing', 'paused-state');
+            updatePlayBtn();
+        }
+
+        function updateStatus(msg) {
+            document.getElementById('music-status').textContent = msg;
+        }
+
+        function updatePlayBtn() {
+            const btn = document.getElementById('music-btn-play');
+            if (isMusicPlaying) {
+                btn.textContent = '⏸️ Duraklat';
+                btn.classList.remove('paused');
+            } else {
+                btn.textContent = '▶️ Oynat';
+                btn.classList.add('paused');
+            }
+        }
+
+        function togglePlayPause() {
+            if (!youtubePlayer || !ytReady) {
+                updateStatus('⏳ Yükleniyor...');
+                loadYouTubeAPI();
+                if (!youtubePlayer) createPlayer();
+                setTimeout(() => togglePlayPause(), 1500);
+                return;
+            }
+            try {
+                if (isMusicPlaying) {
+                    youtubePlayer.pauseVideo();
+                } else {
+                    youtubePlayer.playVideo();
+                }
+                playSound('click');
+            } catch (e) {
+                console.log('⚠️:', e);
+                updateStatus('🔴 Hata • Tekrar tıkla');
+            }
+        }
+
+        function restartMusic() {
+            if (!youtubePlayer || !ytReady) return;
+            try {
+                youtubePlayer.seekTo(0);
+                youtubePlayer.playVideo();
+                playSound('click');
+                updateStatus('🔄 Başa sarıldı');
+            } catch (e) {
+                console.log('⚠️:', e);
+            }
+        }
+
+        function toggleMusicPopup() {
+            const popup = document.getElementById('music-popup');
+            const isOpen = popup.classList.contains('open');
+            if (!isOpen) {
+                if (!ytReady) loadYouTubeAPI();
+                if (!youtubePlayer && ytReady) createPlayer();
+                popup.classList.add('open');
+                updatePlayBtn();
+                updateStatus(isMusicPlaying ? '🟢 Çalıyor • Gaming EDM 2026' : '🟠 Duraklatıldı');
+                playSound('click');
+            } else {
+                popup.classList.remove('open');
+            }
+        }
+
+        function setVolume(val) {
+            musicVolume = parseInt(val);
+            if (youtubePlayer && ytReady) {
+                try { youtubePlayer.setVolume(musicVolume); } catch (e) {}
+            }
+            localStorage.setItem('music_volume', musicVolume);
+        }
+
+        function loadSavedVolume() {
+            const saved = localStorage.getItem('music_volume');
+            if (saved) {
+                musicVolume = parseInt(saved);
+                document.getElementById('music-volume').value = musicVolume;
+            }
+        }
+
+        // Popup dışı tıklama
+        document.addEventListener('click', function(e) {
+            const popup = document.getElementById('music-popup');
+            const fab = document.getElementById('music-fab-btn');
+            if (popup && fab && popup.classList.contains('open') && !popup.contains(e.target) && !fab.contains(e
+                .target)) {
+                popup.classList.remove('open');
+            }
+        });
+
+        // Sayfa kapanırken
+        window.addEventListener('beforeunload', () => {
+            if (youtubePlayer) { try { youtubePlayer.stopVideo(); } catch (e) {} }
+        });
+
+        // ==================== STATE ====================
+        let goals = JSON.parse(localStorage.getItem('hedef_goals') || '[]');
+        let badges = JSON.parse(localStorage.getItem('hedef_badges') || '{}');
+        let deleteId = null;
+        let currentFilter = 'all';
+        let quoteCountdown = 15;
+        let quoteInterval = null;
+        let countdownInterval = null;
+
+        // ==================== CAT COLORS ====================
+        const catColors = {
+            '🚗 Araç': { bg: 'rgba(245,166,35,0.15)', color: '#f5a623' },
+            '🏠 Ev/Konut': { bg: 'rgba(224,92,47,0.15)', color: '#e05c2f' },
+            '✈️ Tatil': { bg: 'rgba(61,163,245,0.15)', color: '#3da3f5' },
+            '💻 Teknoloji': { bg: 'rgba(168,85,247,0.15)', color: '#a855f7' },
+            '📈 Yatırım': { bg: 'rgba(61,214,140,0.15)', color: '#3dd68c' },
+            '🎓 Eğitim': { bg: 'rgba(234,179,8,0.15)', color: '#eab308' },
+            '💪 Sağlık': { bg: 'rgba(239,68,68,0.15)', color: '#ef4444' },
+            '🎮 Eğlence': { bg: 'rgba(14,165,233,0.15)', color: '#0ea5e9' },
+            '👔 Giyim': { bg: 'rgba(236,72,153,0.15)', color: '#ec4899' },
+            '🌟 Diğer': { bg: 'rgba(148,163,184,0.15)', color: '#94a3b8' },
+        };
+
+        // ==================== BADGES ====================
+        const badgeDefs = [
+            { id: 'first_goal', name: 'İlk Adım', desc: 'İlk hedefini ekledin!', icon: '🎯' },
+            { id: 'first_complete', name: 'İlk Zafer', desc: 'İlk hedefini tamamladın!', icon: '🏆' },
+            { id: 'five_goals', name: 'Hedef Avcısı', desc: '5 hedef ekledin!', icon: '🎪' },
+            { id: 'three_complete', name: 'Bitirici', desc: '3 hedef tamamladın!', icon: '⭐' },
+            { id: 'ten_goals', name: 'Koleksiyoncu', desc: '10 hedef ekledin!', icon: '💎' },
+            { id: 'all_complete', name: 'Efsane', desc: 'Tüm hedefleri tamamladın!', icon: '👑' },
+            { id: 'big_saver', name: 'Büyük Birikimci', desc: 'Toplam 100.000₺ hedef!', icon: '💰' },
+            { id: 'speed_run', name: 'Hızlı Bitirici', desc: 'Süresinden önce tamamladın!', icon: '⚡' },
+        ];
+
+        function checkBadges() {
+            const nb = {};
+            if (goals.length >= 1 && !badges['first_goal']) nb['first_goal'] = true;
+            if (goals.filter(g => g.completed).length >= 1 && !badges['first_complete']) nb['first_complete'] = true;
+            if (goals.length >= 5 && !badges['five_goals']) nb['five_goals'] = true;
+            if (goals.filter(g => g.completed).length >= 3 && !badges['three_complete']) nb['three_complete'] = true;
+            if (goals.length >= 10 && !badges['ten_goals']) nb['ten_goals'] = true;
+            if (goals.length > 0 && goals.every(g => g.completed) && !badges['all_complete']) nb['all_complete'] = true;
+            if (goals.reduce((s, g) => s + g.amount, 0) >= 100000 && !badges['big_saver']) nb['big_saver'] = true;
+            if (goals.filter(g => g.completed).some(g => new Date(g.completedAt || Date.now()) < new Date(g.targetDate)) && !
+                badges['speed_run']) nb['speed_run'] = true;
+            const keys = Object.keys(nb);
+            if (keys.length > 0) {
+                keys.forEach(k => { badges[k] = true; });
+                localStorage.setItem('hedef_badges', JSON.stringify(badges));
+                renderBadges();
+                showToast(`🏆 Yeni rozet: ${badgeDefs.find(b=>b.id===keys[0]).icon} ${badgeDefs.find(b=>b.id===keys[0]).name}!`);
+                launchConfetti();
+            }
+        }
+
+        function renderBadges() {
+            document.getElementById('badges-list').innerHTML = badgeDefs.map(b => `
+                <div class="badge-item ${badges[b.id]?'unlocked':''}">
+                    <div class="badge-icon">${b.icon}</div><div class="badge-info"><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>${badges[b.id]?'✅':'🔒'}
+                </div>`).join('');
+        }
+
+        function toggleBadges() {
+            document.getElementById('badges-panel').classList.toggle('open');
+            document.getElementById('badges-backdrop').classList.toggle('open');
+        }
+
+        function launchConfetti() {
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#f5a623','#e05c2f','#3dd68c','#a855f7','#3da3f5'] });
+            setTimeout(() => { confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0, y: 0.6 } }); confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1, y: 0.6 } }); }, 250);
+        }
+
+        // ==================== DATE ====================
+        function updateDate() {
+            const d = new Date();
+            const tr = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+            document.getElementById('current-date').textContent = `${d.getDate()} ${tr[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        // ==================== QUOTES ====================
+        async function fetchQuote() {
+            const el = document.getElementById('quote-text');
+            const auth = document.getElementById('quote-author');
+            el.classList.remove('visible');
+            const apis = [
+                async () => { const r = await fetch('https://zenquotes.io/api/random',{signal:AbortSignal.timeout(5000)}); if(!r.ok)throw new Error(); const d=await r.json(); return {text:d[0].q,author:d[0].a}; },
+                async () => { const r = await fetch('https://api.quotable.io/random?maxLength=150',{signal:AbortSignal.timeout(5000)}); if(!r.ok)throw new Error(); const d=await r.json(); return {text:d.content,author:d.author}; },
+                async () => { const r = await fetch('https://dummyjson.com/quotes/random',{signal:AbortSignal.timeout(5000)}); if(!r.ok)throw new Error(); const d=await r.json(); return {text:d.quote,author:d.author}; },
+            ];
+            for (const fn of apis) {
+                try { const result = await fn();
+                    setTimeout(() => { el.textContent = result.text;
+                        auth.textContent = `— ${result.author}`;
+                        el.classList.add('visible'); }, 300); return; } catch (e) { continue; }
+            }
+            setTimeout(() => { el.textContent = "Hedeflerine odaklan, başarı seni bekliyor!";
+                auth.textContent = "— Hedef Paneli";
+                el.classList.add('visible'); }, 300);
+        }
+
+        function startQuoteCycle() {
+            fetchQuote();
+            quoteCountdown = 15;
+            clearInterval(quoteInterval);
+            clearInterval(countdownInterval);
+            quoteInterval = setInterval(() => { fetchQuote();
+                quoteCountdown = 15; }, 15000);
+            countdownInterval = setInterval(() => { quoteCountdown--; if (quoteCountdown < 0) quoteCountdown = 15;
+                document.getElementById('quote-countdown').textContent = quoteCountdown + 's';
+                document.getElementById('quote-bar').style.width = ((quoteCountdown / 15) * 100) + '%'; }, 1000);
+        }
+
+        // ==================== FORMAT ====================
+        function fmt(n) { return Number(n).toLocaleString('tr-TR', { maximumFractionDigits: 0 }); }
+
+        function fmtDec(n) { return Number(n).toLocaleString('tr-TR', { minimumFractionDigits: 2,
+                maximumFractionDigits: 2 }); }
+
+        function save() { localStorage.setItem('hedef_goals', JSON.stringify(goals)); }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+
+        // ==================== IMPORT/EXPORT ====================
+        function exportData() {
+            playSound('click');
+            const data = JSON.stringify({ goals, badges }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'hedef-paneli-yedek-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📤 Dışa aktarıldı!');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            playSound('click');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.goals) { goals = data.goals;
+                        save(); }
+                    if (data.badges) { badges = data.badges;
+                        localStorage.setItem('hedef_badges', JSON.stringify(badges)); }
+                    renderGoals();
+                    updateStats();
+                    renderBadges();
+                    showToast('📥 İçe aktarıldı!');
+                } catch (err) { showToast('⚠️ Geçersiz dosya!'); }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ==================== CHART ====================
+        let chartInstance = null;
+
+        function showChart() {
+            playSound('click');
+            document.getElementById('chart-modal-overlay').classList.add('open');
+            setTimeout(() => {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                if (chartInstance) chartInstance.destroy();
+                const active = goals.filter(g => !g.completed);
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: active.map(g => g.name.length > 20 ? g.name.substring(0, 20) + '...' : g.name),
+                        datasets: [{ label: '%', data: active.map(g => (g.saved / g.amount) * 100),
+                            backgroundColor: active.map(g => (catColors[g.category] || catColors['🌟 Diğer']).color),
+                            borderRadius: 8, borderSkipped: false }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } },
+                        scales: { x: { max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#5a5a7a',
+                                callback: v => '%' + v } }, y: { ticks: { color: '#e8e8f0', font: { size: 11 } } } } }
+                });
+            }, 300);
+        }
+
+        document.getElementById('chart-modal-overlay').addEventListener('click', function(e) { if (e.target === this) this
+                .classList.remove('open'); });
+
+        // ==================== ADD GOAL ====================
+        function addGoal() {
+            playSound('add');
+            const name = document.getElementById('inp-name').value.trim();
+            const amount = parseFloat(document.getElementById('inp-amount').value);
+            const months = parseInt(document.getElementById('inp-months').value);
+            if (!name) { showToast('⚠️ Hedef adı giriniz!'); return; }
+            if (!amount || amount <= 0) { showToast('⚠️ Geçerli tutar giriniz!'); return; }
+            if (!months || months <= 0) { showToast('⚠️ Geçerli süre giriniz!'); return; }
+            const saved = parseFloat(document.getElementById('inp-saved').value) || 0;
+            const remaining = Math.max(0, amount - saved);
+            const targetDate = new Date();
+            targetDate.setMonth(targetDate.getMonth() + months);
+            const goal = {
+                id: Date.now(),
+                name,
+                amount,
+                months,
+                category: document.getElementById('inp-category').value,
+                priority: parseInt(document.getElementById('inp-priority').value),
+                saved,
+                note: document.getElementById('inp-note').value.trim(),
+                dailyNeed: remaining / (months * 30),
+                monthlyNeed: remaining / months,
+                targetDate: targetDate.toISOString(),
+                createdAt: new Date().toISOString(),
+                completed: saved >= amount,
+                completedAt: saved >= amount ? new Date().toISOString() : null,
+            };
+            goals.unshift(goal);
+            save();
+            renderGoals();
+            updateStats();
+            checkBadges();
+            ['inp-name', 'inp-amount', 'inp-months', 'inp-saved', 'inp-note'].forEach(id => document.getElementById(id)
+                .value = '');
+            showToast(`✅ "${name}" eklendi!`);
+        }
+
+        // ==================== RENDER ====================
+        function renderGoals() {
+            const grid = document.getElementById('goals-grid');
+            let filtered = goals;
+            if (currentFilter === 'active') filtered = goals.filter(g => !g.completed);
+            if (currentFilter === 'completed') filtered = goals.filter(g => g.completed);
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="empty-emoji">🎯</div><div class="empty-title">${currentFilter==='completed'?'Henüz Tamamlanan Hedef Yok':'Henüz Hedef Eklemediniz'}</div><div class="empty-sub">Formu kullanarak hedef ekleyin!</div></div>`;
+                return;
+            }
+            grid.innerHTML = [...filtered].sort((a, b) => b.priority - a.priority).map(g => {
+                const pct = Math.min(100, (g.saved / g.amount) * 100);
+                const cat = catColors[g.category] || catColors['🌟 Diğer'];
+                const daysLeft = Math.ceil((new Date(g.targetDate) - new Date()) / 86400000);
+                let dc = 'safe',
+                    di = '🟢';
+                if (daysLeft <= 30) { dc = 'urgent';
+                    di = '🔴'; } else if (daysLeft <= 90) { dc = 'soon';
+                    di = '🟡'; }
+                const tr = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+                const td = new Date(g.targetDate);
+                return `<div class="goal-card ${g.completed?'completed':''}" id="card-${g.id}">
+                    <div class="goal-header"><div><div class="goal-cat-badge" style="background:${cat.bg};color:${cat.color}">${g.category}</div><div style="margin-top:4px">${[1,2,3].map(i=>`<span style="font-size:11px;color:${i<=g.priority?'var(--accent)':'var(--border)'}">${i<=g.priority?'★':'☆'}</span>`).join('')}</div></div><button class="goal-menu-btn ripple" onclick="openDeleteModal(${g.id})">✕</button></div>
+                    <div class="goal-body">${g.completed?'<div class="completed-badge">🏆 TAMAMLANDI</div>':''}<div class="goal-name">${g.name}</div>${g.note?`<div class="goal-note">${g.note}</div>`:''}
+                    <div class="progress-row"><span style="font-size:11px;color:var(--muted)">₺${fmt(g.saved)} / ₺${fmt(g.amount)}</span><span class="progress-pct">${pct.toFixed(1)}%</span></div>
+                    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+                    <div class="goal-stats"><div class="goal-stat"><div class="goal-stat-label">Günlük</div><div class="goal-stat-value highlight">₺${fmtDec(g.dailyNeed)}</div></div><div class="goal-stat"><div class="goal-stat-label">Aylık</div><div class="goal-stat-value">₺${fmt(g.monthlyNeed)}</div></div><div class="goal-stat"><div class="goal-stat-label">Kalan</div><div class="goal-stat-value">₺${fmt(Math.max(0,g.amount-g.saved))}</div></div><div class="goal-stat"><div class="goal-stat-label">Süre</div><div class="goal-stat-value">${g.months} Ay</div></div></div>
+                    ${!g.completed?`<div class="savings-row"><input type="number" class="savings-input" id="savinp-${g.id}" placeholder="Birikim ekle (₺)" min="0" inputmode="numeric"><button class="savings-btn ripple" onclick="addSaving(${g.id})">+ Ekle</button></div>`:''}
+                    <div class="goal-deadline ${dc}">${di} ${td.getDate()} ${tr[td.getMonth()]} ${td.getFullYear()} ${!g.completed?`(${daysLeft>0?daysLeft+' gün':'Süre doldu!'})`:''}</div></div></div>`;
+            }).join('');
+            document.querySelectorAll('.goal-card').forEach(card => {
+                card.addEventListener('mousemove', function(e) { const r = this.getBoundingClientRect(), x = e.clientX - r
+                        .left, y = e.clientY - r.top;
+                    this.style.transform =
+                        `perspective(1000px) rotateX(${(y-r.height/2)/r.height*2*-5}deg) rotateY(${(x-r.width/2)/r.width*2*5}deg) translateY(-4px)`; });
+                card.addEventListener('mouseleave', function() { this.style.transform =
+                        'perspective(1000px) rotateX(0) rotateY(0) translateY(0)'; });
+            });
+        }
+
+        function addSaving(id) {
+            playSound('click');
+            const val = parseFloat(document.getElementById(`savinp-${id}`).value);
+            if (!val || val <= 0) { showToast('⚠️ Geçerli tutar girin!'); return; }
+            const g = goals.find(x => x.id === id);
+            if (!g) return;
+            const wasDone = g.completed;
+            g.saved = Math.min(g.amount, g.saved + val);
+            const rem = Math.max(0, g.amount - g.saved);
+            const dl = Math.ceil((new Date(g.targetDate) - new Date()) / 86400000);
+            g.dailyNeed = dl > 0 ? rem / dl : 0;
+            g.monthlyNeed = rem / Math.max(1, Math.ceil(dl / 30));
+            g.completed = g.saved >= g.amount;
+            if (g.completed && !wasDone) g.completedAt = new Date().toISOString();
+            document.getElementById(`savinp-${id}`).value = '';
+            save();
+            renderGoals();
+            updateStats();
+            checkBadges();
+            if (g.completed && !wasDone) { playSound('success');
+                launchConfetti();
+                const c = document.getElementById(`card-${id}`); if (c) { c.classList.add('glitch-active');
+                    setTimeout(() => c.classList.remove('glitch-active'), 500); }
+                showToast(`🏆 "${g.name}" tamamlandı!`); } else showToast(`💰 ₺${fmt(val)} eklendi! Kalan: ₺${fmt(rem)}`);
+        }
+
+        function updateStats() {
+            document.getElementById('stat-total').textContent = goals.length;
+            document.getElementById('stat-done').textContent = goals.filter(g => g.completed).length;
+            document.getElementById('stat-amount').textContent = '₺' + fmt(goals.reduce((s, g) => s + g.amount, 0));
+            document.getElementById('stat-daily').textContent = '₺' + fmtDec(goals.filter(g => !g.completed).reduce((s, g) =>
+                s + g.dailyNeed, 0));
+        }
+
+        function filterCat(f, btn) { playSound('click');
+            currentFilter = f;
+            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            renderGoals(); }
+
+        function openDeleteModal(id) { deleteId = id;
+            document.getElementById('modal-msg').textContent = `"${goals.find(x=>x.id===id).name}" silinsin mi?`;
+            document.getElementById('delete-modal').classList.add('open'); }
+
+        function closeDeleteModal() { document.getElementById('delete-modal').classList.remove('open');
+            deleteId = null; }
+
+        function confirmDelete() { if (!deleteId) return;
+            playSound('delete');
+            const g = goals.find(x => x.id === deleteId);
+            goals = goals.filter(x => x.id !== deleteId);
+            save();
+            renderGoals();
+            updateStats();
+            closeDeleteModal();
+            showToast(`🗑️ "${g.name}" silindi.`); }
+        document.getElementById('delete-modal').addEventListener('click', function(e) { if (e.target === this)
+                closeDeleteModal(); });
+
+        // ==================== KEYBOARD ====================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeDeleteModal(); if (document.getElementById('badges-panel').classList.contains(
+                    'open')) toggleBadges();
+                document.getElementById('chart-modal-overlay').classList.remove('open');
+                document.getElementById('music-popup').classList.remove('open'); }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault();
+                document.getElementById('inp-name').focus(); }
+            if (e.key === ' ' && document.activeElement === document.body) { e.preventDefault();
+                togglePlayPause(); }
+        });
+
+        // ==================== INIT ====================
+        function init() {
+            updateDate();
+            startQuoteCycle();
+            renderGoals();
+            updateStats();
+            renderBadges();
+            loadSavedVolume();
+            updatePlayBtn();
+            loadYouTubeAPI();
+            checkBadges();
+        }
+        init();
+    </script>
+</body>
+</html>
