@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0a0f">
-    <meta name="description" content="Finansal Hedef Takip Paneli - Hedeflerini belirle, birikimini takip et, başarıya ulaş!">
+    <meta name="description" content="Finansal Hedef Takip Paneli - Oyunlaştırılmış">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Hedef Paneli">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
     <title>HEDEF PANELİ</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -17,7 +15,6 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js">
     </script>
-
     <style>
         :root {
             --bg: #0a0a0f;
@@ -29,16 +26,14 @@
             --accent3: #3dd68c;
             --text: #e8e8f0;
             --muted: #5a5a7a;
-            --danger: #e05c2f;
-            --gold: #f5a623;
+            --xp-bar-bg: #1a1a2e;
+            --xp-fill: #a855f7;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             background: var(--bg);
             color: var(--text);
@@ -46,143 +41,23 @@
             min-height: 100vh;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
-            -webkit-font-smoothing: antialiased;
         }
-
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background-image:
-                linear-gradient(rgba(245, 166, 35, 0.03) 1px, transparent 1px),
+            background-image: linear-gradient(rgba(245, 166, 35, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(245, 166, 35, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
             pointer-events: none;
             z-index: 0;
         }
-
-        body::after {
-            content: '';
-            position: fixed;
-            top: -200px;
-            right: -200px;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(245, 166, 35, 0.06) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
         .container {
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 16px 60px;
             position: relative;
             z-index: 1;
-        }
-
-        /* Skeleton Loader */
-        .skeleton-loader {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s, visibility 0.5s;
-        }
-
-        .skeleton-loader.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .skeleton-content {
-            text-align: center;
-        }
-
-        .skeleton-spinner {
-            width: 60px;
-            height: 60px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .skeleton-text {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: 4px;
-            color: var(--accent);
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        /* Glitch Effect */
-        @keyframes glitch {
-            0% {
-                transform: translate(0);
-            }
-            20% {
-                transform: translate(-2px, 2px);
-            }
-            40% {
-                transform: translate(-2px, -2px);
-            }
-            60% {
-                transform: translate(2px, 2px);
-            }
-            80% {
-                transform: translate(2px, -2px);
-            }
-            100% {
-                transform: translate(0);
-            }
-        }
-
-        .glitch-active {
-            animation: glitch 0.3s ease-in-out;
-        }
-
-        /* Ripple Effect */
-        .ripple {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .ripple-effect {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(0);
-            animation: rippleAnim 0.6s ease-out;
-            pointer-events: none;
-        }
-
-        @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
         }
 
         /* HEADER */
@@ -196,21 +71,13 @@
             flex-wrap: wrap;
             gap: 16px;
         }
-
-        .logo {
-            display: flex;
-            flex-direction: column;
-        }
-
         .logo-eyebrow {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             letter-spacing: 3px;
             color: var(--accent);
             text-transform: uppercase;
-            margin-bottom: 4px;
         }
-
         .logo-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: clamp(40px, 8vw, 72px);
@@ -218,18 +85,15 @@
             color: var(--text);
             letter-spacing: 2px;
         }
-
         .logo-title span {
             color: var(--accent);
         }
-
         .header-actions {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
             align-items: center;
         }
-
         .header-btn {
             padding: 8px 12px;
             background: var(--surface2);
@@ -239,32 +103,21 @@
             cursor: pointer;
             font-size: 18px;
             transition: all 0.2s;
-            position: relative;
             min-width: 44px;
             text-align: center;
         }
-
         .header-btn:hover {
             border-color: var(--accent);
             background: rgba(245, 166, 35, 0.1);
         }
-
         .header-btn:active {
             transform: scale(0.95);
         }
-
-        /* Müzik header butonu */
         .music-header-btn.playing {
-            border-color: var(--accent3) !important;
+            border-color: #3dd68c !important;
             background: rgba(61, 214, 140, 0.15) !important;
             animation: musicPulse 2s ease-in-out infinite;
         }
-
-        .music-header-btn.paused-state {
-            border-color: var(--accent) !important;
-            background: rgba(245, 166, 35, 0.15) !important;
-        }
-
         @keyframes musicPulse {
             0%,
             100% {
@@ -274,21 +127,127 @@
                 box-shadow: 0 0 0 15px rgba(61, 214, 140, 0);
             }
         }
-
         .current-date-text {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             color: var(--muted);
             letter-spacing: 2px;
         }
-
         .current-date-value {
             font-family: 'Bebas Neue', sans-serif;
             font-size: clamp(18px, 3vw, 24px);
             color: var(--text);
         }
 
-        /* QUOTE BANNER */
+        /* XP & LEVEL BAR */
+        .xp-bar-container {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 28px;
+        }
+        .xp-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .xp-level {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: var(--xp-fill);
+            letter-spacing: 2px;
+        }
+        .xp-info {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+        }
+        .xp-bar-track {
+            width: 100%;
+            height: 8px;
+            background: var(--xp-bar-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .xp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a855f7, #7c3aed);
+            border-radius: 4px;
+            transition: width 0.8s;
+            position: relative;
+        }
+        .xp-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -2px;
+            width: 12px;
+            height: 12px;
+            background: #a855f7;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #a855f7;
+        }
+        .xp-rewards {
+            display: flex;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* DAILY MISSIONS */
+        .daily-missions {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 28px;
+        }
+        .missions-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        .mission-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+        .mission-item:last-child {
+            border-bottom: none;
+        }
+        .mission-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .mission-check.done {
+            border-color: #3dd68c;
+            background: rgba(61, 214, 140, 0.2);
+            color: #3dd68c;
+        }
+        .mission-xp {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--xp-fill);
+            flex-shrink: 0;
+        }
+
+        /* QUOTE */
         .quote-banner {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -296,60 +255,36 @@
             border-radius: 0 12px 12px 0;
             padding: 16px;
             margin-bottom: 28px;
-            position: relative;
-            overflow: hidden;
-            min-height: 72px;
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
         .quote-icon {
             font-size: 20px;
             flex-shrink: 0;
-            position: relative;
-            z-index: 1;
         }
-
-        .quote-content {
-            flex: 1;
-            min-width: 0;
-            position: relative;
-            z-index: 1;
-        }
-
         #quote-text {
             font-size: 13px;
             font-style: italic;
-            color: var(--text);
-            line-height: 1.5;
             opacity: 0;
             transition: opacity 0.5s;
-            word-wrap: break-word;
         }
-
         #quote-text.visible {
             opacity: 1;
         }
-
         #quote-author {
             font-size: 11px;
             color: var(--accent);
             font-family: 'JetBrains Mono', monospace;
             margin-top: 4px;
-            letter-spacing: 1px;
         }
-
         .quote-timer {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             color: var(--muted);
             text-align: right;
             flex-shrink: 0;
-            position: relative;
-            z-index: 1;
         }
-
         .quote-timer-bar {
             width: 32px;
             height: 2px;
@@ -358,7 +293,6 @@
             margin-top: 4px;
             overflow: hidden;
         }
-
         .quote-timer-fill {
             height: 100%;
             background: var(--accent);
@@ -366,31 +300,26 @@
             transition: width 1s linear;
         }
 
-        /* STATS ROW */
+        /* STATS */
         .stats-row {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-bottom: 28px;
         }
-
         .stat-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 14px 12px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s, border-color 0.3s;
+            transition: transform 0.3s;
             cursor: pointer;
         }
-
         .stat-card:hover {
-            transform: translateY(-4px) rotateX(5deg);
+            transform: translateY(-4px);
             border-color: var(--accent);
         }
-
         .stat-label {
             font-family: 'JetBrains Mono', monospace;
             font-size: 9px;
@@ -399,14 +328,12 @@
             text-transform: uppercase;
             margin-bottom: 6px;
         }
-
         .stat-value {
             font-family: 'Bebas Neue', sans-serif;
             font-size: clamp(24px, 5vw, 32px);
             color: var(--accent);
             line-height: 1;
         }
-
         .stat-sub {
             font-size: 10px;
             color: var(--muted);
@@ -424,7 +351,6 @@
             align-items: center;
             gap: 10px;
         }
-
         .section-title::after {
             content: '';
             flex: 1;
@@ -432,31 +358,25 @@
             background: var(--border);
         }
 
-        /* MÜZİK POPUP */
+        /* MUSIC POPUP */
         .music-popup {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 20px;
-            position: relative;
-            z-index: 10;
         }
-
         .music-popup-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 4px;
         }
-
         .music-popup-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 18px;
             letter-spacing: 2px;
-            color: var(--text);
         }
-
         .music-popup-close {
             background: none;
             border: none;
@@ -465,22 +385,7 @@
             font-size: 20px;
             padding: 4px 8px;
             border-radius: 6px;
-            transition: all 0.2s;
         }
-
-        .music-popup-close:hover {
-            color: var(--text);
-            background: var(--surface2);
-        }
-
-        .music-popup-subtitle {
-            font-size: 9px;
-            color: var(--accent2);
-            margin-bottom: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 1px;
-        }
-
         .music-status {
             font-size: 10px;
             color: var(--muted);
@@ -491,13 +396,11 @@
             background: var(--surface2);
             border-radius: 6px;
         }
-
         .music-controls {
             display: flex;
             gap: 6px;
             margin-bottom: 8px;
         }
-
         .music-ctrl-btn {
             flex: 1;
             padding: 10px 8px;
@@ -507,90 +410,62 @@
             color: var(--text);
             cursor: pointer;
             font-size: 13px;
-            transition: all 0.2s;
             text-align: center;
             font-family: 'DM Sans', sans-serif;
         }
-
-        .music-ctrl-btn:hover {
-            border-color: var(--accent);
-            background: rgba(245, 166, 35, 0.1);
-        }
-
         .music-ctrl-btn.play-btn {
             background: rgba(61, 214, 140, 0.15);
             border-color: rgba(61, 214, 140, 0.3);
-            color: var(--accent3);
+            color: #3dd68c;
             font-weight: 600;
-            font-size: 14px;
         }
-
         .music-ctrl-btn.play-btn.paused {
             background: rgba(245, 166, 35, 0.15);
             border-color: rgba(245, 166, 35, 0.3);
             color: var(--accent);
         }
-
         .music-volume-row {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 0 4px;
         }
-
-        .music-volume-icon {
-            font-size: 12px;
-            color: var(--muted);
-            flex-shrink: 0;
-        }
-
         .music-volume {
             flex: 1;
             accent-color: var(--accent);
             height: 4px;
             cursor: pointer;
         }
+        .music-volume-icon {
+            font-size: 12px;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
 
-        /* ADD FORM */
+        /* FORM */
         .add-form {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 28px;
-            transition: border-color 0.3s, transform 0.2s;
         }
-
-        .add-form:hover {
-            transform: translateY(-2px);
-            border-color: rgba(245, 166, 35, 0.3);
-        }
-
-        .add-form:focus-within {
-            border-color: rgba(245, 166, 35, 0.4);
-            box-shadow: 0 0 40px rgba(245, 166, 35, 0.06);
-        }
-
         .form-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 12px;
             margin-bottom: 16px;
         }
-
         .form-row2 {
             display: grid;
             grid-template-columns: 1fr;
             gap: 12px;
             margin-bottom: 16px;
         }
-
         .form-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
         }
-
         label {
             font-family: 'JetBrains Mono', monospace;
             font-size: 9px;
@@ -598,7 +473,6 @@
             color: var(--muted);
             text-transform: uppercase;
         }
-
         input,
         select {
             background: var(--surface2);
@@ -609,29 +483,24 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
             width: 100%;
             -webkit-appearance: none;
             appearance: none;
         }
-
         input:focus,
         select:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
         }
-
         select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a5a7a' fill='none' stroke-width='2'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             padding-right: 32px;
         }
-
         select option {
             background: var(--surface2);
         }
-
         .add-btn {
             width: 100%;
             padding: 14px;
@@ -644,34 +513,24 @@
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
-
         .add-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(245, 166, 35, 0.3);
         }
 
-        .add-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* CATEGORY PILLS */
+        /* CAT PILLS */
         .cat-pills {
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
             margin-bottom: 20px;
             overflow-x: auto;
-            padding-bottom: 4px;
             -webkit-overflow-scrolling: touch;
         }
-
         .cat-pills::-webkit-scrollbar {
             display: none;
         }
-
         .cat-pill {
             padding: 6px 12px;
             border-radius: 20px;
@@ -681,40 +540,28 @@
             font-size: 11px;
             cursor: pointer;
             transition: all 0.3s;
-            font-family: 'DM Sans', sans-serif;
             white-space: nowrap;
             flex-shrink: 0;
         }
-
-        .cat-pill:hover {
-            transform: translateY(-2px);
-        }
-
         .cat-pill.active {
             border-color: var(--accent);
             color: var(--accent);
             background: rgba(245, 166, 35, 0.08);
-            transform: scale(1.05);
         }
 
-        /* GOALS GRID */
+        /* GOALS */
         .goals-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 16px;
         }
-
         .goal-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
             overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
             animation: cardIn 0.5s ease both;
-            transform-style: preserve-3d;
-            perspective: 1000px;
         }
-
         @keyframes cardIn {
             from {
                 opacity: 0;
@@ -725,18 +572,10 @@
                 transform: translateY(0) scale(1);
             }
         }
-
-        .goal-card:hover {
-            transform: translateY(-4px) rotateX(2deg);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-            border-color: rgba(245, 166, 35, 0.3);
-        }
-
         .goal-card.completed {
             border-color: rgba(61, 214, 140, 0.3);
             background: linear-gradient(135deg, var(--surface), rgba(61, 214, 140, 0.05));
         }
-
         .goal-header {
             padding: 16px;
             display: flex;
@@ -744,7 +583,6 @@
             justify-content: space-between;
             gap: 10px;
         }
-
         .goal-cat-badge {
             display: inline-flex;
             align-items: center;
@@ -753,9 +591,7 @@
             border-radius: 6px;
             font-size: 10px;
             font-weight: 600;
-            letter-spacing: 0.5px;
         }
-
         .goal-menu-btn {
             background: none;
             border: none;
@@ -764,52 +600,34 @@
             font-size: 16px;
             padding: 6px;
             border-radius: 6px;
-            transition: all 0.2s;
-            line-height: 1;
         }
-
-        .goal-menu-btn:hover {
-            color: var(--text);
-            background: var(--surface2);
-            transform: scale(1.1) rotate(90deg);
-        }
-
         .goal-body {
             padding: 0 16px 16px;
         }
-
         .goal-name {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
             letter-spacing: 1px;
-            color: var(--text);
-            margin-bottom: 3px;
             line-height: 1.1;
             word-break: break-word;
         }
-
         .goal-note {
             font-size: 11px;
             color: var(--muted);
             font-style: italic;
             margin-bottom: 12px;
         }
-
         .progress-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 6px;
-            flex-wrap: wrap;
-            gap: 4px;
         }
-
         .progress-pct {
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             color: var(--accent);
         }
-
         .progress-track {
             width: 100%;
             height: 6px;
@@ -818,160 +636,77 @@
             overflow: hidden;
             margin-bottom: 12px;
         }
-
         .progress-fill {
             height: 100%;
             border-radius: 3px;
             background: linear-gradient(90deg, var(--accent), var(--accent2));
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
+            transition: width 0.8s;
         }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: -2px;
-            width: 10px;
-            height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent);
-        }
-
         .goal-card.completed .progress-fill {
-            background: linear-gradient(90deg, var(--accent3), #2ab87d);
+            background: linear-gradient(90deg, #3dd68c, #2ab87d);
         }
-
-        .goal-card.completed .progress-fill::after {
-            background: var(--accent3);
-            box-shadow: 0 0 10px var(--accent3);
-        }
-
         .goal-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 8px;
             margin-bottom: 12px;
         }
-
         .goal-stat {
             background: var(--surface2);
             border-radius: 8px;
             padding: 8px 10px;
-            transition: transform 0.2s;
         }
-
-        .goal-stat:hover {
-            transform: scale(1.05);
-        }
-
         .goal-stat-label {
             font-family: 'JetBrains Mono', monospace;
             font-size: 8px;
             letter-spacing: 1.5px;
             color: var(--muted);
             text-transform: uppercase;
-            margin-bottom: 3px;
         }
-
         .goal-stat-value {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 16px;
-            color: var(--text);
-            line-height: 1;
         }
-
         .goal-stat-value.highlight {
             color: var(--accent);
             font-size: 18px;
         }
-
         .savings-row {
             display: flex;
             gap: 6px;
             align-items: center;
         }
-
         .savings-input {
             flex: 1;
             padding: 8px 10px;
             font-size: 13px;
-            min-width: 0;
         }
-
         .savings-btn {
             padding: 8px 12px;
             background: rgba(61, 214, 140, 0.15);
             border: 1px solid rgba(61, 214, 140, 0.3);
             border-radius: 8px;
-            color: var(--accent3);
+            color: #3dd68c;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             cursor: pointer;
-            transition: all 0.2s;
             white-space: nowrap;
         }
-
-        .savings-btn:hover {
-            background: rgba(61, 214, 140, 0.25);
-            border-color: var(--accent3);
-            transform: scale(1.05);
-        }
-
-        .savings-btn:active {
-            transform: scale(0.95);
-        }
-
         .goal-deadline {
             font-family: 'JetBrains Mono', monospace;
             font-size: 10px;
             color: var(--muted);
             margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
         }
-
         .goal-deadline.urgent {
-            color: var(--danger);
+            color: #e05c2f;
         }
         .goal-deadline.soon {
-            color: var(--gold);
+            color: #f5a623;
         }
         .goal-deadline.safe {
-            color: var(--accent3);
+            color: #3dd68c;
         }
-
-        /* EMPTY STATE */
-        .empty-state {
-            grid-column: 1/-1;
-            text-align: center;
-            padding: 60px 20px;
-            border: 1px dashed var(--border);
-            border-radius: 16px;
-        }
-
-        .empty-emoji {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        .empty-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 26px;
-            color: var(--muted);
-            letter-spacing: 2px;
-            margin-bottom: 6px;
-        }
-
-        .empty-sub {
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        /* COMPLETED BADGE */
         .completed-badge {
             display: inline-flex;
             align-items: center;
@@ -981,10 +716,30 @@
             border-radius: 6px;
             padding: 3px 8px;
             font-size: 10px;
-            color: var(--accent3);
+            color: #3dd68c;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .savings-mode-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9px;
             font-weight: 600;
             letter-spacing: 0.5px;
-            margin-bottom: 6px;
+            margin-left: 6px;
+        }
+        .savings-mode-tag.linear {
+            background: rgba(61, 163, 245, 0.15);
+            color: #3da3f5;
+        }
+        .savings-mode-tag.easy {
+            background: rgba(61, 214, 140, 0.15);
+            color: #3dd68c;
+        }
+        .savings-mode-tag.hard {
+            background: rgba(245, 166, 35, 0.15);
+            color: #f5a623;
         }
 
         /* MODAL */
@@ -1002,40 +757,35 @@
             pointer-events: none;
             transition: opacity 0.3s;
         }
-
         .modal-overlay.open {
             opacity: 1;
             pointer-events: all;
         }
-
         .modal {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 20px;
             padding: 24px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             transform: scale(0.9) translateY(20px);
             transition: transform 0.3s;
+            max-height: 85vh;
+            overflow-y: auto;
         }
-
         .modal-overlay.open .modal {
             transform: scale(1) translateY(0);
         }
-
         .modal-title {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 24px;
             margin-bottom: 16px;
-            color: var(--text);
         }
-
         .modal-actions {
             display: flex;
             gap: 8px;
             margin-top: 20px;
         }
-
         .btn-delete,
         .btn-cancel {
             flex: 1;
@@ -1044,31 +794,53 @@
             font-family: 'Bebas Neue', sans-serif;
             font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s;
         }
-
         .btn-delete {
             background: rgba(224, 92, 47, 0.15);
             border: 1px solid rgba(224, 92, 47, 0.3);
-            color: var(--danger);
+            color: #e05c2f;
         }
-
-        .btn-delete:hover {
-            background: rgba(224, 92, 47, 0.25);
-            border-color: var(--danger);
-        }
-
         .btn-cancel {
             background: var(--surface2);
             border: 1px solid var(--border);
             color: var(--text);
         }
 
-        .btn-cancel:hover {
-            border-color: var(--muted);
+        /* STATS MODAL */
+        .stats-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .stats-detail-item {
+            background: var(--surface2);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stats-detail-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--accent);
+        }
+        .stats-detail-label {
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .stats-chart-container {
+            margin-bottom: 16px;
+            position: relative;
+            height: 250px;
+        }
+        .stats-chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
 
-        /* BADGES PANEL */
+        /* BADGES */
         .badges-panel {
             position: fixed;
             right: -350px;
@@ -1080,14 +852,12 @@
             border-left: 1px solid var(--border);
             z-index: 90;
             padding: 20px;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: right 0.3s;
             overflow-y: auto;
         }
-
         .badges-panel.open {
             right: 0;
         }
-
         .badges-backdrop {
             position: fixed;
             inset: 0;
@@ -1097,12 +867,10 @@
             pointer-events: none;
             transition: opacity 0.3s;
         }
-
         .badges-backdrop.open {
             opacity: 1;
             pointer-events: all;
         }
-
         .badge-item {
             display: flex;
             align-items: center;
@@ -1114,28 +882,19 @@
             border: 1px solid var(--border);
             opacity: 0.3;
             filter: grayscale(1);
-            transition: all 0.3s;
         }
-
         .badge-item.unlocked {
             opacity: 1;
             filter: grayscale(0);
             border-color: var(--accent);
         }
-
         .badge-icon {
             font-size: 32px;
         }
-
-        .badge-info {
-            flex: 1;
-        }
-
         .badge-name {
             font-weight: 600;
             font-size: 13px;
         }
-
         .badge-desc {
             font-size: 11px;
             color: var(--muted);
@@ -1149,11 +908,10 @@
             right: 16px;
             background: var(--surface2);
             border: 1px solid var(--border);
-            border-left: 3px solid var(--accent3);
+            border-left: 3px solid #3dd68c;
             border-radius: 10px;
             padding: 12px 16px;
             font-size: 13px;
-            color: var(--text);
             z-index: 999;
             transform: translateY(100px);
             opacity: 0;
@@ -1161,13 +919,10 @@
             text-align: center;
             pointer-events: none;
         }
-
         .toast.show {
             transform: translateY(0);
             opacity: 1;
         }
-
-        /* IMPORT/EXPORT */
         .import-input {
             display: none;
         }
@@ -1178,13 +933,25 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-
         #progressChart {
             width: 100% !important;
             height: 300px !important;
         }
 
-        /* SCROLLBAR */
+        /* STREAK FIRE */
+        .streak-fire {
+            display: inline-block;
+            animation: fireAnim 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes fireAnim {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.2);
+            }
+        }
+
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -1195,11 +962,7 @@
             background: var(--border);
             border-radius: 2px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--muted);
-        }
 
-        /* RESPONSIVE */
         @media (min-width: 480px) {
             .container {
                 padding: 0 20px 60px;
@@ -1213,14 +976,10 @@
             .add-form {
                 padding: 24px;
             }
-            .quote-banner {
-                padding: 18px 20px;
-            }
             #quote-text {
                 font-size: 14px;
             }
         }
-
         @media (min-width: 640px) {
             .stats-row {
                 grid-template-columns: repeat(4, 1fr);
@@ -1229,7 +988,6 @@
                 grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             }
         }
-
         @media (min-width: 768px) {
             .form-grid {
                 grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -1243,57 +1001,41 @@
                 bottom: 30px;
             }
         }
-
-        @media (min-width: 1024px) {
-            .container {
-                padding: 0 24px 60px;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- SKELETON LOADER -->
-    <div class="skeleton-loader" id="skeleton-loader">
-        <div class="skeleton-content">
-            <div class="skeleton-spinner"></div>
-            <div class="skeleton-text">HEDEF PANELİ</div>
+    <div id="skeleton-loader" style="position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity 0.5s;">
+        <div style="text-align:center;">
+            <div style="width:60px;height:60px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px;"></div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--accent);">HEDEF PANELİ</div>
         </div>
     </div>
 
-    <!-- BADGES BACKDROP -->
     <div class="badges-backdrop" id="badges-backdrop" onclick="toggleBadges()"></div>
-
-    <!-- BADGES PANEL -->
     <div class="badges-panel" id="badges-panel">
         <h3 style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:20px;">🏆 BAŞARILAR</h3>
         <div id="badges-list"></div>
         <button class="btn-cancel" style="width:100%;margin-top:16px;" onclick="toggleBadges()">KAPAT</button>
     </div>
 
-    <!-- GİZLİ YOUTUBE PLAYER -->
     <div id="youtube-player-container" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;">
         <div id="youtube-player"></div>
     </div>
 
-    <!-- MAIN CONTAINER -->
     <div class="container">
-        <!-- HEADER -->
         <header>
             <div class="logo">
-                <span class="logo-eyebrow">// finansal planlama v2.0</span>
+                <span class="logo-eyebrow">// finansal planlama v4.0</span>
                 <h1 class="logo-title">HEDEF <span>PANELİ</span></h1>
             </div>
             <div class="header-actions">
-                <!-- MÜZİK BUTONU - HEADER'DA -->
-                <button class="header-btn ripple music-header-btn" id="music-header-btn" onclick="toggleMusicPopup()" title="Müzik Kontrolü">
-                    🎵
-                </button>
-                <button class="header-btn ripple" onclick="exportData()" title="Dışa Aktar">📤</button>
-                <button class="header-btn ripple" onclick="document.getElementById('import-input').click()" title="İçe Aktar">📥</button>
+                <button class="header-btn music-header-btn" id="music-header-btn" onclick="toggleMusicPopup()" title="Müzik">🎵</button>
+                <button class="header-btn" onclick="exportData()" title="Dışa Aktar">📤</button>
+                <button class="header-btn" onclick="document.getElementById('import-input').click()" title="İçe Aktar">📥</button>
                 <input type="file" id="import-input" class="import-input" accept=".json" onchange="importData(event)">
-                <button class="header-btn ripple" onclick="showChart()" title="Grafik">📊</button>
-                <button class="header-btn ripple" onclick="toggleBadges()" title="Rozetler">🏆</button>
+                <button class="header-btn" onclick="showStatsModal()" title="Detaylı İstatistik">📊</button>
+                <button class="header-btn" onclick="toggleBadges()" title="Rozetler">🏆</button>
                 <div style="text-align:right;">
                     <div class="current-date-text">BUGÜN</div>
                     <div class="current-date-value" id="current-date"></div>
@@ -1301,17 +1043,42 @@
             </div>
         </header>
 
-        <!-- MÜZİK POPUP -->
+        <!-- XP & LEVEL BAR -->
+        <div class="xp-bar-container">
+            <div class="xp-bar-header">
+                <span class="xp-level" id="xp-level">Seviye 1</span>
+                <span class="xp-info" id="xp-info">0 / 100 XP</span>
+            </div>
+            <div class="xp-bar-track">
+                <div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div>
+            </div>
+            <div class="xp-rewards">
+                <span id="xp-streak">🔥 0 günlük seri</span>
+                <span style="margin-left:auto;" id="xp-total">Toplam XP: 0</span>
+            </div>
+        </div>
+
+        <!-- DAILY MISSIONS -->
+        <div class="daily-missions">
+            <div class="missions-title">🎯 GÜNLÜK GÖREVLER</div>
+            <div id="missions-list">
+                <div class="mission-item">
+                    <div class="mission-check">🎯</div>
+                    <span>Yükleniyor...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MUSIC POPUP -->
         <div class="music-popup" id="music-popup" style="display:none;">
             <div class="music-popup-header">
                 <div class="music-popup-title">🎮 GAMING EDM 2026</div>
                 <button class="music-popup-close" onclick="closeMusicPopup()">✕</button>
             </div>
-            <div class="music-popup-subtitle">YouTube • Arka Planda Gizli Çalar</div>
             <div class="music-status" id="music-status">⏳ Yükleniyor...</div>
             <div class="music-controls">
                 <button class="music-ctrl-btn play-btn" id="music-btn-play" onclick="togglePlayPause()">▶️ Oynat</button>
-                <button class="music-ctrl-btn" onclick="restartMusic()" title="Başa Sar">🔄 Başa Sar</button>
+                <button class="music-ctrl-btn" onclick="restartMusic()">🔄 Başa Sar</button>
             </div>
             <div class="music-volume-row">
                 <span class="music-volume-icon">🔈</span>
@@ -1320,356 +1087,309 @@
             </div>
         </div>
 
-        <!-- QUOTE BANNER -->
         <div class="quote-banner">
             <span class="quote-icon">💡</span>
-            <div class="quote-content">
+            <div>
                 <div id="quote-text">Yükleniyor...</div>
                 <div id="quote-author"></div>
             </div>
             <div class="quote-timer">
                 <div id="quote-countdown">15s</div>
-                <div class="quote-timer-bar">
-                    <div class="quote-timer-fill" id="quote-bar" style="width:100%"></div>
-                </div>
+                <div class="quote-timer-bar"><div class="quote-timer-fill" id="quote-bar" style="width:100%"></div></div>
             </div>
         </div>
 
-        <!-- STATS ROW -->
         <div class="stats-row">
-            <div class="stat-card ripple"><div class="stat-label">Toplam Hedef</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">hedef kayıtlı</div></div>
-            <div class="stat-card ripple"><div class="stat-label">Tamamlanan</div><div class="stat-value" id="stat-done" style="color:var(--accent3)">0</div><div class="stat-sub">hedef tamamlandı</div></div>
-            <div class="stat-card ripple"><div class="stat-label">Toplam Hedef ₺</div><div class="stat-value" id="stat-amount">0</div><div class="stat-sub">toplam para</div></div>
-            <div class="stat-card ripple"><div class="stat-label">Günlük İhtiyaç</div><div class="stat-value" id="stat-daily" style="color:var(--accent2)">0</div><div class="stat-sub">₺/gün biriktir</div></div>
+            <div class="stat-card" onclick="showStatsModal()"><div class="stat-label">Toplam Hedef</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub">hedef kayıtlı</div></div>
+            <div class="stat-card" onclick="showStatsModal()"><div class="stat-label">Tamamlanan</div><div class="stat-value" id="stat-done" style="color:#3dd68c">0</div><div class="stat-sub">hedef tamamlandı</div></div>
+            <div class="stat-card" onclick="showStatsModal()"><div class="stat-label">Toplam Birikim</div><div class="stat-value" id="stat-total-saved">₺0</div><div class="stat-sub">bugüne kadar</div></div>
+            <div class="stat-card" onclick="showStatsModal()"><div class="stat-label">Günlük Seri</div><div class="stat-value" id="stat-streak" style="color:#a855f7">0 🔥</div><div class="stat-sub">gün üst üste</div></div>
         </div>
 
-        <!-- ADD GOAL FORM -->
         <div class="section-title">🎯 YENİ HEDEF EKLE</div>
         <div class="add-form">
             <div class="form-grid">
-                <div class="form-group"><label>Hedef Adı</label><input type="text" id="inp-name" placeholder="Örn: Yeni Araba, Tatil..." autocomplete="off" /></div>
-                <div class="form-group"><label>Hedef Tutarı (₺)</label><input type="number" id="inp-amount" placeholder="50000" min="1" inputmode="numeric" /></div>
-                <div class="form-group"><label>Süre (Ay)</label><input type="number" id="inp-months" placeholder="12" min="1" max="360" inputmode="numeric" /></div>
+                <div class="form-group"><label>Hedef Adı</label><input type="text" id="inp-name" placeholder="Örn: Yeni Araba, Tatil..." autocomplete="off"></div>
+                <div class="form-group"><label>Hedef Tutarı (₺)</label><input type="number" id="inp-amount" placeholder="50000" min="1" inputmode="numeric"></div>
+                <div class="form-group"><label>Süre (Gün)</label><input type="number" id="inp-days" placeholder="30" min="1" max="3650" inputmode="numeric"></div>
                 <div class="form-group"><label>Kategori</label><select id="inp-category"><option value="🚗 Araç">🚗 Araç</option><option value="🏠 Ev/Konut">🏠 Ev/Konut</option><option value="✈️ Tatil">✈️ Tatil</option><option value="💻 Teknoloji">💻 Teknoloji</option><option value="📈 Yatırım">📈 Yatırım</option><option value="🎓 Eğitim">🎓 Eğitim</option><option value="💪 Sağlık">💪 Sağlık</option><option value="🎮 Eğlence">🎮 Eğlence</option><option value="👔 Giyim">👔 Giyim</option><option value="🌟 Diğer">🌟 Diğer</option></select></div>
             </div>
             <div class="form-row2">
                 <div class="form-group"><label>Öncelik (1-3 ★)</label><select id="inp-priority"><option value="1">★ Düşük</option><option value="2">★★ Orta</option><option value="3" selected>★★★ Yüksek</option></select></div>
-                <div class="form-group"><label>Mevcut Birikim (₺)</label><input type="number" id="inp-saved" placeholder="0" min="0" inputmode="numeric" /></div>
-                <div class="form-group"><label>Not (İsteğe Bağlı)</label><input type="text" id="inp-note" placeholder="Kısa bir not..." autocomplete="off" /></div>
+                <div class="form-group"><label>Mevcut Birikim (₺)</label><input type="number" id="inp-saved" placeholder="0" min="0" inputmode="numeric"></div>
+                <div class="form-group"><label>Birikim Modeli</label><select id="inp-savings-mode"><option value="linear" selected>📏 Sabit (Her gün eşit)</option><option value="easy">🌱 Kolaydan Zora</option><option value="hard">🔥 Zordan Kolaya</option></select></div>
             </div>
-            <button class="add-btn ripple" onclick="addGoal()">+ HEDEF EKLE</button>
+            <div class="form-group" style="margin-bottom:16px;"><label>Not (İsteğe Bağlı)</label><input type="text" id="inp-note" placeholder="Kısa bir not..." autocomplete="off"></div>
+            <button class="add-btn" onclick="addGoal()">+ HEDEF EKLE</button>
         </div>
 
-        <!-- FILTER PILLS -->
         <div class="cat-pills" id="cat-pills">
             <button class="cat-pill active" onclick="filterCat('all', this)">🔥 Tümü</button>
             <button class="cat-pill" onclick="filterCat('active', this)">⏳ Devam Eden</button>
             <button class="cat-pill" onclick="filterCat('completed', this)">✅ Tamamlanan</button>
         </div>
 
-        <!-- GOALS GRID -->
         <div class="section-title">📋 HEDEFLERİM</div>
         <div class="goals-grid" id="goals-grid"></div>
     </div>
 
     <!-- DELETE MODAL -->
     <div class="modal-overlay" id="delete-modal">
-        <div class="modal"><div class="modal-title">🗑️ HEDEFİ SİL</div><p style="color:var(--muted);font-size:13px;" id="modal-msg"></p><div class="modal-actions"><button class="btn-cancel ripple" onclick="closeDeleteModal()">İPTAL</button><button class="btn-delete ripple" onclick="confirmDelete()">SİL</button></div></div>
+        <div class="modal"><div class="modal-title">🗑️ HEDEFİ SİL</div><p style="color:var(--muted);font-size:13px;" id="modal-msg"></p><div class="modal-actions"><button class="btn-cancel" onclick="closeDeleteModal()">İPTAL</button><button class="btn-delete" onclick="confirmDelete()">SİL</button></div></div>
+    </div>
+
+    <!-- STATS MODAL -->
+    <div class="modal-overlay" id="stats-modal">
+        <div class="modal" style="max-width:600px;">
+            <div class="modal-title">📊 DETAYLI İSTATİSTİK</div>
+            <div class="stats-detail-grid">
+                <div class="stats-detail-item"><div class="stats-detail-value" id="det-total">0</div><div class="stats-detail-label">Toplam Hedef</div></div>
+                <div class="stats-detail-item"><div class="stats-detail-value" id="det-done">0</div><div class="stats-detail-label">Tamamlanan</div></div>
+                <div class="stats-detail-item"><div class="stats-detail-value" id="det-saving">₺0</div><div class="stats-detail-label">Toplam Birikim</div></div>
+                <div class="stats-detail-item"><div class="stats-detail-value" id="det-rate">%0</div><div class="stats-detail-label">Başarı Oranı</div></div>
+            </div>
+            <div class="stats-chart-container">
+                <canvas id="statsPieChart"></canvas>
+            </div>
+            <div class="stats-chart-container">
+                <canvas id="statsBarChart"></canvas>
+            </div>
+            <div class="modal-actions"><button class="btn-cancel" onclick="document.getElementById('stats-modal').classList.remove('open')">KAPAT</button></div>
+        </div>
     </div>
 
     <!-- CHART MODAL -->
     <div class="modal-overlay" id="chart-modal-overlay">
-        <div class="modal chart-modal"><div class="modal-title">📊 İLERLEME GRAFİĞİ</div><canvas id="progressChart"></canvas><div class="modal-actions"><button class="btn-cancel ripple" onclick="document.getElementById('chart-modal-overlay').classList.remove('open')">KAPAT</button></div></div>
+        <div class="modal chart-modal"><div class="modal-title">📊 İLERLEME GRAFİĞİ</div><canvas id="progressChart"></canvas><div class="modal-actions"><button class="btn-cancel" onclick="document.getElementById('chart-modal-overlay').classList.remove('open')">KAPAT</button></div></div>
     </div>
 
-    <!-- TOAST -->
     <div class="toast" id="toast"></div>
 
     <script>
         // ==================== SERVICE WORKER ====================
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('✅ SW:', reg.scope))
-                    .catch(err => console.log('❌ SW:', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
         }
 
         // ==================== SKELETON ====================
         window.addEventListener('load', () => {
-            setTimeout(() => document.getElementById('skeleton-loader').classList.add('hidden'), 1500);
-        });
-
-        // ==================== RIPPLE ====================
-        document.addEventListener('click', function(e) {
-            const el = e.target.closest('.ripple');
-            if (!el) return;
-            const r = document.createElement('span');
-            r.className = 'ripple-effect';
-            const rect = el.getBoundingClientRect();
-            const s = Math.max(rect.width, rect.height);
-            r.style.width = r.style.height = s + 'px';
-            r.style.left = (e.clientX - rect.left - s / 2) + 'px';
-            r.style.top = (e.clientY - rect.top - s / 2) + 'px';
-            el.appendChild(r);
-            r.addEventListener('animationend', () => r.remove());
+            setTimeout(() => {
+                const sl = document.getElementById('skeleton-loader');
+                if (sl) { sl.style.opacity = '0';
+                    sl.style.pointerEvents = 'none';
+                    setTimeout(() => sl.remove(), 500); }
+            }, 800);
         });
 
         // ==================== SOUND ====================
         let audioCtx = null;
 
-        function initAudio() {
-            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
+        function initAudio() { if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)(); if (audioCtx
+                .state === 'suspended') audioCtx.resume(); }
 
-        function playBeep(freq, type, dur, vol = 0.1) {
-            initAudio();
-            if (!audioCtx) return;
-            const o = audioCtx.createOscillator();
-            const g = audioCtx.createGain();
-            o.type = type || 'sine';
-            o.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            g.gain.setValueAtTime(vol, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+        function playBeep(f, t, d, v = 0.1) { initAudio(); if (!audioCtx) return;
+            const o = audioCtx.createOscillator(),
+                g = audioCtx.createGain();
+            o.type = t;
+            o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
             o.connect(g);
             g.connect(audioCtx.destination);
-            o.start(audioCtx.currentTime);
-            o.stop(audioCtx.currentTime + dur);
+            o.start();
+            o.stop(audioCtx.currentTime + d); }
+
+        function playSound(s) { initAudio(); if (s === 'click') playBeep(600, 'sine', 0.08, 0.08); if (s === 'success') {
+                playBeep(523, 'sine', 0.15, 0.1);
+                setTimeout(() => playBeep(659, 'sine', 0.15, 0.1), 100);
+                setTimeout(() => playBeep(784, 'sine', 0.15, 0.2), 200); } if (s === 'delete') playBeep(200, 'sawtooth', 0.15,
+                0.06); if (s === 'add') { playBeep(400, 'triangle', 0.1, 0.08);
+                setTimeout(() => playBeep(600, 'triangle', 0.1, 0.08), 80); } if (s === 'levelup') { playBeep(523, 'sine', 0.2,
+                    0.15);
+                setTimeout(() => playBeep(659, 'sine', 0.2, 0.15), 150);
+                setTimeout(() => playBeep(784, 'sine', 0.2, 0.2), 300);
+                setTimeout(() => playBeep(1047, 'sine', 0.2, 0.3), 450); } }
+
+        // ==================== YOUTUBE ====================
+        const YT_VIDEO_ID = 'PP2Uvesx4ls';
+        let youtubePlayer = null,
+            isMusicPlaying = false,
+            musicVolume = 30,
+            ytReady = false;
+
+        function loadYouTubeAPI() { if (document.getElementById('yt-api')) return;
+            const t = document.createElement('script');
+            t.id = 'yt-api';
+            t.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(t); }
+
+        function onYouTubeIframeAPIReady() { ytReady = true;
+            createPlayer(); }
+
+        function createPlayer() { if (!ytReady || youtubePlayer) return;
+            youtubePlayer = new YT.Player('youtube-player', { height: '1', width: '1', videoId: YT_VIDEO_ID, playerVars: { autoplay: 0,
+                    controls: 0, disablekb: 1, enablejsapi: 1, fs: 0, iv_load_policy: 3, modestbranding: 1,
+                    playsinline: 1, rel: 0, showinfo: 0, mute: 0, loop: 1, playlist: YT_VIDEO_ID }, events: { onReady: onPlayerReady,
+                    onStateChange: onPlayerStateChange, onError: onPlayerError } }); }
+
+        function onPlayerReady(e) { e.target.setVolume(musicVolume);
+            updateStatus('✅ Hazır');
+            setTimeout(() => { try { e.target.playVideo(); } catch (e) {} }, 500); }
+
+        function onPlayerStateChange(e) { const b = document.getElementById('music-header-btn'); if (e.data === 1) { isMusicPlaying =
+                    true; if (b) { b.classList.add('playing');
+                    b.classList.remove('paused-state'); } updateStatus('🟢 Çalıyor');
+                updatePlayBtn(); } else if (e.data === 2) { isMusicPlaying = false; if (b) { b.classList.remove('playing');
+                    b.classList.add('paused-state'); } updateStatus('🟠 Duraklatıldı');
+                updatePlayBtn(); } else if (e.data === 0) { if (youtubePlayer) youtubePlayer.playVideo(); } }
+
+        function onPlayerError(e) { updateStatus('🔴 Hata');
+            isMusicPlaying = false;
+            document.getElementById('music-header-btn').classList.remove('playing', 'paused-state');
+            updatePlayBtn(); }
+
+        function updateStatus(m) { const el = document.getElementById('music-status'); if (el) el.textContent = m; }
+
+        function updatePlayBtn() { const b = document.getElementById('music-btn-play'); if (!b) return;
+            b.textContent = isMusicPlaying ? '⏸️ Duraklat' : '▶️ Oynat'; if (isMusicPlaying) b.classList.remove('paused');
+            else b.classList.add('paused'); }
+
+        function togglePlayPause() { if (!youtubePlayer || !ytReady) { loadYouTubeAPI();
+                setTimeout(() => togglePlayPause(), 1500); return; } try { if (isMusicPlaying) youtubePlayer.pauseVideo();
+                else youtubePlayer.playVideo();
+                playSound('click'); } catch (e) {} }
+
+        function restartMusic() { if (youtubePlayer) { try { youtubePlayer.seekTo(0);
+                    youtubePlayer.playVideo();
+                    playSound('click');
+                    updateStatus('🔄 Başa sarıldı'); } catch (e) {} } }
+
+        function toggleMusicPopup() { const p = document.getElementById('music-popup'); if (p.style.display === 'block') { p.style
+                    .display = 'none'; return; } if (!ytReady) loadYouTubeAPI(); if (!youtubePlayer && ytReady) createPlayer();
+            p.style.display = 'block';
+            updatePlayBtn();
+            playSound('click'); }
+
+        function closeMusicPopup() { document.getElementById('music-popup').style.display = 'none'; }
+
+        function setVolume(v) { musicVolume = parseInt(v); if (youtubePlayer) try { youtubePlayer.setVolume(musicVolume); } catch (
+                e) {} localStorage.setItem('music_volume', musicVolume); }
+
+        function loadSavedVolume() { const s = localStorage.getItem('music_volume'); if (s) { musicVolume = parseInt(s);
+                document.getElementById('music-volume').value = musicVolume; } }
+
+        // ==================== XP & LEVEL SYSTEM ====================
+        let playerData = { xp: 0, level: 1, streak: 0, lastActiveDate: '', totalSaved: 0, goalsCreated: 0,
+            goalsCompleted: 0, missionsCompletedToday: 0, todayDate: '' };
+        try { const s = localStorage.getItem('player_data'); if (s) playerData = JSON.parse(s); } catch (e) {}
+
+        const XP_PER_LEVEL = 100;
+        const XP_GOAL_CREATE = 25;
+        const XP_SAVING_ADD = 10;
+        const XP_GOAL_COMPLETE = 50;
+        const XP_MISSION = 20;
+        const XP_STREAK_BONUS = 5;
+
+        function getLevelForXP(xp) { return Math.floor(xp / XP_PER_LEVEL) + 1; }
+
+        function getXPForNextLevel(level) { return level * XP_PER_LEVEL; }
+
+        function getXPProgress(xp) { const lvl = getLevelForXP(xp);
+            const currentLvlXP = (lvl - 1) * XP_PER_LEVEL;
+            return { level: lvl, currentXP: xp - currentLvlXP, neededXP: XP_PER_LEVEL, pct: ((xp - currentLvlXP) / XP_PER_LEVEL) *
+                    100 }; }
+
+        function addXP(amount) {
+            const oldLevel = playerData.level;
+            playerData.xp += amount;
+            playerData.level = getLevelForXP(playerData.xp);
+            savePlayerData();
+            updateXPBar();
+            if (playerData.level > oldLevel) { playSound('levelup');
+                confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 }, colors: ['#a855f7', '#f5a623', '#3dd68c',
+                        '#f59e0b'
+                    ] });
+                showToast(`🎉 Seviye ATLADIN! Seviye ${playerData.level}!`); }
         }
 
-        function playSound(type) {
-            initAudio();
-            switch (type) {
-                case 'click': playBeep(600, 'sine', 0.08, 0.08); break;
-                case 'success': playBeep(523, 'sine', 0.15, 0.1); setTimeout(() => playBeep(659, 'sine', 0.15, 0.1), 100);
-                    setTimeout(() => playBeep(784, 'sine', 0.15, 0.2), 200); break;
-                case 'delete': playBeep(200, 'sawtooth', 0.15, 0.06); break;
-                case 'add': playBeep(400, 'triangle', 0.1, 0.08);
-                    setTimeout(() => playBeep(600, 'triangle', 0.1, 0.08), 80); break;
+        function savePlayerData() { localStorage.setItem('player_data', JSON.stringify(playerData)); }
+
+        function checkStreak() {
+            const today = new Date().toISOString().split('T')[0];
+            if (playerData.todayDate !== today) {
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+                if (playerData.lastActiveDate === yesterdayStr) {
+                    playerData.streak += 1;
+                    if (playerData.streak > 0) addXP(XP_STREAK_BONUS * playerData.streak);
+                } else if (playerData.lastActiveDate !== today) {
+                    playerData.streak = 1;
+                }
+                playerData.lastActiveDate = today;
+                playerData.todayDate = today;
+                playerData.missionsCompletedToday = 0;
+                savePlayerData();
             }
         }
 
-        // ==================== YOUTUBE PLAYER ====================
-        const YT_VIDEO_ID = 'PP2Uvesx4ls';
-        let youtubePlayer = null;
-        let isMusicPlaying = false;
-        let musicVolume = 30;
-        let ytReady = false;
-        let autoPlayDone = false;
-
-        function loadYouTubeAPI() {
-            if (document.getElementById('yt-api')) return;
-            const tag = document.createElement('script');
-            tag.id = 'yt-api';
-            tag.src = 'https://www.youtube.com/iframe_api';
-            document.head.appendChild(tag);
+        function updateXPBar() {
+            const { level, pct } = getXPProgress(playerData.xp);
+            document.getElementById('xp-level').textContent = `Seviye ${level}`;
+            document.getElementById('xp-info').textContent =
+                `${Math.floor(playerData.xp - (level-1)*XP_PER_LEVEL)} / ${XP_PER_LEVEL} XP`;
+            document.getElementById('xp-bar-fill').style.width = pct + '%';
+            document.getElementById('xp-streak').innerHTML =
+                `${playerData.streak > 2 ? '<span class="streak-fire">🔥</span>' : '🔥'} ${playerData.streak} günlük seri`;
+            document.getElementById('xp-total').textContent = `Toplam XP: ${playerData.xp}`;
         }
 
-        function onYouTubeIframeAPIReady() {
-            ytReady = true;
-            console.log('✅ YouTube API hazır');
-            createPlayer();
+        // ==================== DAILY MISSIONS ====================
+        function getDailyMissions() {
+            return [
+                { id: 'add_saving', name: 'Bugün birikim ekle', xp: XP_MISSION,
+                    check: () => playerData.missionsCompletedToday > 0, icon: '💰' },
+                { id: 'create_goal', name: 'Yeni hedef oluştur', xp: XP_MISSION + 10,
+                    check: () => playerData.goalsCreated > 0 && playerData.todayDate === new Date().toISOString().split(
+                        'T')[0], icon: '🎯' },
+                { id: 'streak_3', name: '3 günlük seriye ulaş', xp: XP_MISSION + 5,
+                    check: () => playerData.streak >= 3, icon: '🔥' },
+            ];
         }
 
-        function createPlayer() {
-            if (!ytReady || youtubePlayer) return;
-            youtubePlayer = new YT.Player('youtube-player', {
-                height: '1',
-                width: '1',
-                videoId: YT_VIDEO_ID,
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'disablekb': 1,
-                    'enablejsapi': 1,
-                    'fs': 0,
-                    'iv_load_policy': 3,
-                    'modestbranding': 1,
-                    'playsinline': 1,
-                    'rel': 0,
-                    'showinfo': 0,
-                    'mute': 0,
-                    'loop': 1,
-                    'playlist': YT_VIDEO_ID
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onPlayerError,
+        function renderMissions() {
+            const missions = getDailyMissions();
+            const container = document.getElementById('missions-list');
+            container.innerHTML = missions.map(m => `
+                <div class="mission-item">
+                    <div class="mission-check ${m.check()?'done':''}">${m.check()?'✅':m.icon}</div>
+                    <span>${m.name}</span>
+                    <span class="mission-xp">+${m.xp} XP</span>
+                </div>
+            `).join('');
+        }
+
+        function completeMissionCheck() {
+            const missions = getDailyMissions();
+            missions.forEach(m => {
+                if (m.check() && !playerData[`mission_${m.id}_done_${playerData.todayDate}`]) {
+                    playerData[`mission_${m.id}_done_${playerData.todayDate}`] = true;
+                    addXP(m.xp);
+                    showToast(`✅ Görev tamamlandı: ${m.name} (+${m.xp} XP)`);
                 }
             });
+            renderMissions();
         }
-
-        function onPlayerReady(event) {
-            console.log('✅ YouTube Player hazır');
-            event.target.setVolume(musicVolume);
-            event.target.setPlaybackQuality('small');
-            updateStatus('✅ Hazır • Bekleniyor...');
-
-            if (!autoPlayDone) {
-                autoPlayDone = true;
-                setTimeout(() => tryAutoPlay(), 800);
-            }
-        }
-
-        function tryAutoPlay() {
-            if (!youtubePlayer || !ytReady) {
-                setTimeout(tryAutoPlay, 1000);
-                return;
-            }
-            try {
-                youtubePlayer.playVideo();
-                console.log('🎵 Otomatik oynatma denendi');
-            } catch (e) {
-                console.log('⚠️ Otomatik oynatma hatası:', e);
-                updateStatus('🟠 Başlatmak için tıkla');
-            }
-        }
-
-        function onPlayerStateChange(event) {
-            const headerBtn = document.getElementById('music-header-btn');
-            switch (event.data) {
-                case 1:
-                    isMusicPlaying = true;
-                    if (headerBtn) {
-                        headerBtn.classList.add('playing');
-                        headerBtn.classList.remove('paused-state');
-                    }
-                    updateStatus('🟢 Çalıyor • Gaming EDM 2026');
-                    updatePlayBtn();
-                    break;
-                case 2:
-                    isMusicPlaying = false;
-                    if (headerBtn) {
-                        headerBtn.classList.remove('playing');
-                        headerBtn.classList.add('paused-state');
-                    }
-                    updateStatus('🟠 Duraklatıldı');
-                    updatePlayBtn();
-                    break;
-                case 0:
-                    if (youtubePlayer) youtubePlayer.playVideo();
-                    break;
-                case -1:
-                    updateStatus('⏳ Hazır • Başlat için tıkla');
-                    updatePlayBtn();
-                    break;
-            }
-        }
-
-        function onPlayerError(event) {
-            console.log('❌ YouTube hatası:', event.data);
-            updateStatus('🔴 Hata • Tekrar dene');
-            isMusicPlaying = false;
-            const headerBtn = document.getElementById('music-header-btn');
-            if (headerBtn) headerBtn.classList.remove('playing', 'paused-state');
-            updatePlayBtn();
-        }
-
-        function updateStatus(msg) {
-            const el = document.getElementById('music-status');
-            if (el) el.textContent = msg;
-        }
-
-        function updatePlayBtn() {
-            const btn = document.getElementById('music-btn-play');
-            if (!btn) return;
-            if (isMusicPlaying) {
-                btn.textContent = '⏸️ Duraklat';
-                btn.classList.remove('paused');
-            } else {
-                btn.textContent = '▶️ Oynat';
-                btn.classList.add('paused');
-            }
-        }
-
-        function togglePlayPause() {
-            if (!youtubePlayer || !ytReady) {
-                updateStatus('⏳ Yükleniyor...');
-                loadYouTubeAPI();
-                if (!youtubePlayer) createPlayer();
-                setTimeout(() => togglePlayPause(), 1500);
-                return;
-            }
-            try {
-                if (isMusicPlaying) {
-                    youtubePlayer.pauseVideo();
-                } else {
-                    youtubePlayer.playVideo();
-                }
-                playSound('click');
-            } catch (e) {
-                console.log('⚠️:', e);
-                updateStatus('🔴 Hata • Tekrar tıkla');
-            }
-        }
-
-        function restartMusic() {
-            if (!youtubePlayer || !ytReady) return;
-            try {
-                youtubePlayer.seekTo(0);
-                youtubePlayer.playVideo();
-                playSound('click');
-                updateStatus('🔄 Başa sarıldı • Çalıyor');
-            } catch (e) {
-                console.log('⚠️:', e);
-            }
-        }
-
-        function toggleMusicPopup() {
-            const popup = document.getElementById('music-popup');
-            if (!popup) return;
-            const isOpen = popup.style.display === 'block';
-
-            if (!isOpen) {
-                if (!ytReady) loadYouTubeAPI();
-                if (!youtubePlayer && ytReady) createPlayer();
-                popup.style.display = 'block';
-                updatePlayBtn();
-                updateStatus(isMusicPlaying ? '🟢 Çalıyor • Gaming EDM 2026' : '🟠 Duraklatıldı');
-                playSound('click');
-            } else {
-                popup.style.display = 'none';
-            }
-        }
-
-        function closeMusicPopup() {
-            const popup = document.getElementById('music-popup');
-            if (popup) popup.style.display = 'none';
-        }
-
-        function setVolume(val) {
-            musicVolume = parseInt(val);
-            if (youtubePlayer && ytReady) {
-                try { youtubePlayer.setVolume(musicVolume); } catch (e) {}
-            }
-            localStorage.setItem('music_volume', musicVolume);
-        }
-
-        function loadSavedVolume() {
-            const saved = localStorage.getItem('music_volume');
-            if (saved) {
-                musicVolume = parseInt(saved);
-                const volEl = document.getElementById('music-volume');
-                if (volEl) volEl.value = musicVolume;
-            }
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (youtubePlayer) { try { youtubePlayer.stopVideo(); } catch (e) {} }
-        });
 
         // ==================== STATE ====================
-        let goals = JSON.parse(localStorage.getItem('hedef_goals') || '[]');
-        let badges = JSON.parse(localStorage.getItem('hedef_badges') || '{}');
+        let goals = [];
+        try { const s = localStorage.getItem('hedef_goals'); if (s) goals = JSON.parse(s); } catch (e) { goals = []; }
+        let badges = {};
+        try { const s = localStorage.getItem('hedef_badges'); if (s) badges = JSON.parse(s); } catch (e) { badges = {}; }
         let deleteId = null;
         let currentFilter = 'all';
         let quoteCountdown = 15;
-        let quoteInterval = null;
-        let countdownInterval = null;
 
-        // ==================== CAT COLORS ====================
         const catColors = {
             '🚗 Araç': { bg: 'rgba(245,166,35,0.15)', color: '#f5a623' },
             '🏠 Ev/Konut': { bg: 'rgba(224,92,47,0.15)', color: '#e05c2f' },
@@ -1683,6 +1403,38 @@
             '🌟 Diğer': { bg: 'rgba(148,163,184,0.15)', color: '#94a3b8' },
         };
 
+        // ==================== SAVINGS CALC ====================
+        function calculateSavingsSchedule(totalAmount, totalDays, saved, mode) {
+            const remaining = Math.max(0, totalAmount - saved);
+            if (remaining <= 0) return { dailyNeed: 0, schedule: [] };
+            const schedule = [];
+            let dailyNeed;
+            switch (mode) {
+                case 'linear':
+                    dailyNeed = remaining / totalDays;
+                    for (let i = 0; i < totalDays; i++) schedule.push(dailyNeed);
+                    break;
+                case 'easy':
+                    const es = remaining / (2 * totalDays);
+                    const ee = es * 3;
+                    dailyNeed = es;
+                    for (let i = 0; i < totalDays; i++) { const t = i / (totalDays - 1 || 1);
+                        schedule.push(es + (ee - es) * t); }
+                    break;
+                case 'hard':
+                    const hs = remaining / (2 * totalDays) * 3;
+                    const he = remaining / (2 * totalDays);
+                    dailyNeed = hs;
+                    for (let i = 0; i < totalDays; i++) { const t = i / (totalDays - 1 || 1);
+                        schedule.push(hs + (he - hs) * t); }
+                    break;
+                default:
+                    dailyNeed = remaining / totalDays;
+                    for (let i = 0; i < totalDays; i++) schedule.push(dailyNeed);
+            }
+            return { dailyNeed: schedule[0] || 0, schedule };
+        }
+
         // ==================== BADGES ====================
         const badgeDefs = [
             { id: 'first_goal', name: 'İlk Adım', desc: 'İlk hedefini ekledin!', icon: '🎯' },
@@ -1693,6 +1445,8 @@
             { id: 'all_complete', name: 'Efsane', desc: 'Tüm hedefleri tamamladın!', icon: '👑' },
             { id: 'big_saver', name: 'Büyük Birikimci', desc: 'Toplam 100.000₺ hedef!', icon: '💰' },
             { id: 'speed_run', name: 'Hızlı Bitirici', desc: 'Süresinden önce tamamladın!', icon: '⚡' },
+            { id: 'streak_7', name: 'İstikrar Abidesi', desc: '7 günlük seri!', icon: '🔥' },
+            { id: 'streak_30', name: 'Disiplin Kralı', desc: '30 günlük seri!', icon: '👑' },
         ];
 
         function checkBadges() {
@@ -1704,22 +1458,27 @@
             if (goals.length >= 10 && !badges['ten_goals']) nb['ten_goals'] = true;
             if (goals.length > 0 && goals.every(g => g.completed) && !badges['all_complete']) nb['all_complete'] = true;
             if (goals.reduce((s, g) => s + g.amount, 0) >= 100000 && !badges['big_saver']) nb['big_saver'] = true;
-            if (goals.filter(g => g.completed).some(g => new Date(g.completedAt || Date.now()) < new Date(g.targetDate)) && !
-                badges['speed_run']) nb['speed_run'] = true;
+            if (goals.filter(g => g.completed).some(g => g.completedAt && new Date(g.completedAt) < new Date(g.targetDate)) &&
+                !badges['speed_run']) nb['speed_run'] = true;
+            if (playerData.streak >= 7 && !badges['streak_7']) nb['streak_7'] = true;
+            if (playerData.streak >= 30 && !badges['streak_30']) nb['streak_30'] = true;
             const keys = Object.keys(nb);
             if (keys.length > 0) {
                 keys.forEach(k => { badges[k] = true; });
                 localStorage.setItem('hedef_badges', JSON.stringify(badges));
                 renderBadges();
-                showToast(`🏆 Yeni rozet: ${badgeDefs.find(b=>b.id===keys[0]).icon} ${badgeDefs.find(b=>b.id===keys[0]).name}!`);
-                launchConfetti();
+                const bd = badgeDefs.find(b => b.id === keys[0]);
+                showToast(`🏆 ${bd.icon} ${bd.name}!`);
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#f5a623', '#e05c2f', '#3dd68c',
+                        '#a855f7', '#3da3f5'
+                    ] });
             }
         }
 
         function renderBadges() {
             document.getElementById('badges-list').innerHTML = badgeDefs.map(b => `
                 <div class="badge-item ${badges[b.id]?'unlocked':''}">
-                    <div class="badge-icon">${b.icon}</div><div class="badge-info"><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>${badges[b.id]?'✅':'🔒'}
+                    <div class="badge-icon">${b.icon}</div><div><div class="badge-name">${b.name}</div><div class="badge-desc">${b.desc}</div></div>${badges[b.id]?'✅':'🔒'}
                 </div>`).join('');
         }
 
@@ -1728,15 +1487,12 @@
             document.getElementById('badges-backdrop').classList.toggle('open');
         }
 
-        function launchConfetti() {
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#f5a623','#e05c2f','#3dd68c','#a855f7','#3da3f5'] });
-            setTimeout(() => { confetti({ particleCount: 50, angle: 60, spread: 55, origin: { x: 0, y: 0.6 } }); confetti({ particleCount: 50, angle: 120, spread: 55, origin: { x: 1, y: 0.6 } }); }, 250);
-        }
-
         // ==================== DATE ====================
         function updateDate() {
             const d = new Date();
-            const tr = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+            const tr = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım',
+                'Aralık'
+            ];
             document.getElementById('current-date').textContent = `${d.getDate()} ${tr[d.getMonth()]} ${d.getFullYear()}`;
         }
 
@@ -1746,14 +1502,20 @@
             const auth = document.getElementById('quote-author');
             el.classList.remove('visible');
             const apis = [
-                async () => { const r = await fetch('https://zenquotes.io/api/random',{signal:AbortSignal.timeout(5000)}); if(!r.ok)throw new Error(); const d=await r.json(); return {text:d[0].q,author:d[0].a}; },
-                async () => { const r = await fetch('https://api.quotable.io/random?maxLength=150',{signal:AbortSignal.timeout(5000)}); if(!r.ok)throw new Error(); const d=await r.json(); return {text:d.content,author:d.author}; },
-                async () => { const r = await fetch('https://dummyjson.com/quotes/random',{signal:AbortSignal.timeout(5000)}); if(!r.ok)throw new Error(); const d=await r.json(); return {text:d.quote,author:d.author}; },
+                async () => { const r = await fetch('https://zenquotes.io/api/random', { signal: AbortSignal.timeout(
+                            5000) }); if (!r.ok) throw new Error(); const d = await r.json(); return { text: d[0].q,
+                        author: d[0].a }; },
+                async () => { const r = await fetch('https://api.quotable.io/random?maxLength=150', { signal: AbortSignal
+                            .timeout(5000) }); if (!r.ok) throw new Error(); const d = await r.json(); return { text: d
+                            .content, author: d.author }; },
+                async () => { const r = await fetch('https://dummyjson.com/quotes/random', { signal: AbortSignal.timeout(
+                            5000) }); if (!r.ok) throw new Error(); const d = await r.json(); return { text: d.quote,
+                        author: d.author }; },
             ];
             for (const fn of apis) {
-                try { const result = await fn();
-                    setTimeout(() => { el.textContent = result.text;
-                        auth.textContent = `— ${result.author}`;
+                try { const r = await fn();
+                    setTimeout(() => { el.textContent = r.text;
+                        auth.textContent = `— ${r.author}`;
                         el.classList.add('visible'); }, 300); return; } catch (e) { continue; }
             }
             setTimeout(() => { el.textContent = "Hedeflerine odaklan, başarı seni bekliyor!";
@@ -1761,17 +1523,13 @@
                 el.classList.add('visible'); }, 300);
         }
 
-        function startQuoteCycle() {
-            fetchQuote();
+        function startQuoteCycle() { fetchQuote();
             quoteCountdown = 15;
-            clearInterval(quoteInterval);
-            clearInterval(countdownInterval);
-            quoteInterval = setInterval(() => { fetchQuote();
+            setInterval(() => { fetchQuote();
                 quoteCountdown = 15; }, 15000);
-            countdownInterval = setInterval(() => { quoteCountdown--; if (quoteCountdown < 0) quoteCountdown = 15;
+            setInterval(() => { quoteCountdown--; if (quoteCountdown < 0) quoteCountdown = 15;
                 document.getElementById('quote-countdown').textContent = quoteCountdown + 's';
-                document.getElementById('quote-bar').style.width = ((quoteCountdown / 15) * 100) + '%'; }, 1000);
-        }
+                document.getElementById('quote-bar').style.width = ((quoteCountdown / 15) * 100) + '%'; }, 1000); }
 
         // ==================== FORMAT ====================
         function fmt(n) { return Number(n).toLocaleString('tr-TR', { maximumFractionDigits: 0 }); }
@@ -1779,191 +1537,218 @@
         function fmtDec(n) { return Number(n).toLocaleString('tr-TR', { minimumFractionDigits: 2,
                 maximumFractionDigits: 2 }); }
 
-        function save() { localStorage.setItem('hedef_goals', JSON.stringify(goals)); }
+        function save() { try { localStorage.setItem('hedef_goals', JSON.stringify(goals)); } catch (e) {} }
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
+        function showToast(msg) { const t = document.getElementById('toast');
             t.textContent = msg;
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3000);
-        }
+            setTimeout(() => t.classList.remove('show'), 3000); }
 
         // ==================== IMPORT/EXPORT ====================
-        function exportData() {
-            playSound('click');
-            const data = JSON.stringify({ goals, badges }, null, 2);
+        function exportData() { playSound('click');
+            const data = JSON.stringify({ goals, badges, playerData }, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'hedef-paneli-yedek-' + new Date().toISOString().split('T')[0] + '.json';
+            a.download = 'hedef-paneli-' + new Date().toISOString().split('T')[0] + '.json';
             a.click();
             URL.revokeObjectURL(url);
-            showToast('📤 Dışa aktarıldı!');
-        }
+            showToast('📤 Dışa aktarıldı!'); }
 
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function importData(event) { const file = event.target.files[0]; if (!file) return;
             playSound('click');
             const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.goals) { goals = data.goals;
-                        save(); }
-                    if (data.badges) { badges = data.badges;
-                        localStorage.setItem('hedef_badges', JSON.stringify(badges)); }
+            reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if (data.goals) { goals = data.goals;
+                        save(); } if (data.badges) { badges = data.badges;
+                        localStorage.setItem('hedef_badges', JSON.stringify(badges)); } if (data.playerData) { playerData = data
+                        .playerData;
+                        savePlayerData(); }
                     renderGoals();
                     updateStats();
                     renderBadges();
-                    showToast('📥 İçe aktarıldı!');
-                } catch (err) { showToast('⚠️ Geçersiz dosya!'); }
-            };
+                    updateXPBar();
+                    renderMissions();
+                    showToast('📥 İçe aktarıldı!'); } catch (err) { showToast('⚠️ Geçersiz dosya!'); } };
             reader.readAsText(file);
-            event.target.value = '';
-        }
+            event.target.value = ''; }
 
         // ==================== CHART ====================
         let chartInstance = null;
 
-        function showChart() {
-            playSound('click');
+        function showChart() { playSound('click');
             document.getElementById('chart-modal-overlay').classList.add('open');
-            setTimeout(() => {
-                const ctx = document.getElementById('progressChart').getContext('2d');
-                if (chartInstance) chartInstance.destroy();
+            setTimeout(() => { const ctx = document.getElementById('progressChart').getContext('2d'); if (chartInstance)
+                    chartInstance.destroy();
                 const active = goals.filter(g => !g.completed);
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: active.map(g => g.name.length > 20 ? g.name.substring(0, 20) + '...' : g.name),
-                        datasets: [{ label: '%', data: active.map(g => (g.saved / g.amount) * 100),
-                            backgroundColor: active.map(g => (catColors[g.category] || catColors['🌟 Diğer']).color),
-                            borderRadius: 8, borderSkipped: false }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } },
-                        scales: { x: { max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#5a5a7a',
-                                callback: v => '%' + v } }, y: { ticks: { color: '#e8e8f0', font: { size: 11 } } } } }
-                });
-            }, 300);
-        }
-
+                chartInstance = new Chart(ctx, { type: 'bar', data: { labels: active.map(g => g.name.length > 20 ? g.name
+                            .substring(0, 20) + '...' : g.name), datasets: [{ label: '%', data: active.map(g => (g.saved / g
+                                .amount) * 100), backgroundColor: active.map(g => (catColors[g.category] || catColors[
+                                '🌟 Diğer']).color), borderRadius: 8, borderSkipped: false }] }, options: { responsive: true,
+                        maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { max: 100,
+                                grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#5a5a7a', callback: v => '%' +
+                                    v } }, y: { ticks: { color: '#e8e8f0', font: { size: 11 } } } } } }); }, 300); }
         document.getElementById('chart-modal-overlay').addEventListener('click', function(e) { if (e.target === this) this
                 .classList.remove('open'); });
 
+        // ==================== STATS MODAL ====================
+        let pieChartInstance = null;
+        let barChartInstance = null;
+
+        function showStatsModal() {
+            playSound('click');
+            document.getElementById('stats-modal').classList.add('open');
+
+            const total = goals.length;
+            const done = goals.filter(g => g.completed).length;
+            const totalSaved = goals.reduce((s, g) => s + g.saved, 0);
+            const rate = total > 0 ? ((done / total) * 100) : 0;
+
+            document.getElementById('det-total').textContent = total;
+            document.getElementById('det-done').textContent = done;
+            document.getElementById('det-saving').textContent = '₺' + fmt(totalSaved);
+            document.getElementById('det-rate').textContent = '%' + rate.toFixed(1);
+
+            setTimeout(() => {
+                // Pie Chart - Kategori dağılımı
+                const catMap = {};
+                goals.forEach(g => {
+                    const cat = g.category;
+                    if (!catMap[cat]) catMap[cat] = 0;
+                    catMap[cat] += g.saved;
+                });
+                const catLabels = Object.keys(catMap);
+                const catData = Object.values(catMap);
+                const catColors2 = catLabels.map(c => (catColors[c] || catColors['🌟 Diğer']).color);
+
+                const pieCtx = document.getElementById('statsPieChart').getContext('2d');
+                if (pieChartInstance) pieChartInstance.destroy();
+                pieChartInstance = new Chart(pieCtx, {
+                    type: 'doughnut',
+                    data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: catColors2,
+                            borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom',
+                                labels: { color: '#e8e8f0', font: { size: 10 } } } } }
+                });
+
+                // Bar Chart - Tamamlanan vs Devam Eden
+                const barCtx = document.getElementById('statsBarChart').getContext('2d');
+                if (barChartInstance) barChartInstance.destroy();
+                barChartInstance = new Chart(barCtx, {
+                    type: 'bar',
+                    data: { labels: ['Tamamlanan', 'Devam Eden'], datasets: [{ data: [done, total - done],
+                            backgroundColor: ['#3dd68c', '#f5a623'], borderRadius: 8 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+                        scales: { y: { ticks: { color: '#e8e8f0', stepSize: 1 } }, x: { ticks: { color: '#e8e8f0' } } } }
+                });
+            }, 300);
+        }
+        document.getElementById('stats-modal').addEventListener('click', function(e) { if (e.target === this) this.classList
+                .remove('open'); });
+
         // ==================== ADD GOAL ====================
-        function addGoal() {
-            playSound('add');
+        function addGoal() { playSound('add');
             const name = document.getElementById('inp-name').value.trim();
             const amount = parseFloat(document.getElementById('inp-amount').value);
-            const months = parseInt(document.getElementById('inp-months').value);
+            const days = parseInt(document.getElementById('inp-days').value);
+            const category = document.getElementById('inp-category').value;
+            const priority = parseInt(document.getElementById('inp-priority').value);
+            const saved = parseFloat(document.getElementById('inp-saved').value) || 0;
+            const savingsMode = document.getElementById('inp-savings-mode').value;
+            const note = document.getElementById('inp-note').value.trim();
             if (!name) { showToast('⚠️ Hedef adı giriniz!'); return; }
             if (!amount || amount <= 0) { showToast('⚠️ Geçerli tutar giriniz!'); return; }
-            if (!months || months <= 0) { showToast('⚠️ Geçerli süre giriniz!'); return; }
-            const saved = parseFloat(document.getElementById('inp-saved').value) || 0;
+            if (!days || days <= 0) { showToast('⚠️ Geçerli süre giriniz!'); return; }
+            if (saved >= amount) { showToast('⚠️ Zaten tamamlanmış!'); return; }
             const remaining = Math.max(0, amount - saved);
+            const { dailyNeed, schedule } = calculateSavingsSchedule(amount, days, saved, savingsMode);
             const targetDate = new Date();
-            targetDate.setMonth(targetDate.getMonth() + months);
-            const goal = {
-                id: Date.now(),
-                name,
-                amount,
-                months,
-                category: document.getElementById('inp-category').value,
-                priority: parseInt(document.getElementById('inp-priority').value),
-                saved,
-                note: document.getElementById('inp-note').value.trim(),
-                dailyNeed: remaining / (months * 30),
-                monthlyNeed: remaining / months,
-                targetDate: targetDate.toISOString(),
-                createdAt: new Date().toISOString(),
-                completed: saved >= amount,
-                completedAt: saved >= amount ? new Date().toISOString() : null,
-            };
+            targetDate.setDate(targetDate.getDate() + days);
+            const goal = { id: Date.now(), name, amount, days, category, priority, saved, savingsMode, schedule,
+                currentDay: 0, note, dailyNeed, monthlyNeed: dailyNeed * 30, targetDate: targetDate.toISOString(),
+                createdAt: new Date().toISOString(), completed: false, completedAt: null };
             goals.unshift(goal);
             save();
+            playerData.goalsCreated++;
+            addXP(XP_GOAL_CREATE);
             renderGoals();
             updateStats();
             checkBadges();
-            ['inp-name', 'inp-amount', 'inp-months', 'inp-saved', 'inp-note'].forEach(id => document.getElementById(id)
-                .value = '');
-            showToast(`✅ "${name}" eklendi!`);
-        }
+            completeMissionCheck();
+            ['inp-name', 'inp-amount', 'inp-days', 'inp-saved', 'inp-note'].forEach(id => document.getElementById(id).value =
+                '');
+            document.getElementById('inp-savings-mode').value = 'linear';
+            showToast(`✅ "${name}" eklendi! (+${XP_GOAL_CREATE} XP)`); }
 
         // ==================== RENDER ====================
-        function renderGoals() {
-            const grid = document.getElementById('goals-grid');
-            let filtered = goals;
-            if (currentFilter === 'active') filtered = goals.filter(g => !g.completed);
-            if (currentFilter === 'completed') filtered = goals.filter(g => g.completed);
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="empty-emoji">🎯</div><div class="empty-title">${currentFilter==='completed'?'Henüz Tamamlanan Hedef Yok':'Henüz Hedef Eklemediniz'}</div><div class="empty-sub">Formu kullanarak hedef ekleyin!</div></div>`;
-                return;
-            }
-            grid.innerHTML = [...filtered].sort((a, b) => b.priority - a.priority).map(g => {
-                const pct = Math.min(100, (g.saved / g.amount) * 100);
+        function renderGoals() { const grid = document.getElementById('goals-grid');
+            let filtered = goals; if (currentFilter === 'active') filtered = goals.filter(g => !g.completed); if (
+                currentFilter === 'completed') filtered = goals.filter(g => g.completed); if (filtered.length ===
+            0) { grid.innerHTML =
+                    `<div style="grid-column:1/-1;text-align:center;padding:60px 20px;border:1px dashed var(--border);border-radius:16px;"><div style="font-size:48px;">🎯</div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--muted);">${currentFilter==='completed'?'Tamamlanan Yok':'Hedef Eklemediniz'}</div></div>`
+                    ; return; }
+            grid.innerHTML = [...filtered].sort((a, b) => b.priority - a.priority).map(g => { const pct = Math.min(100, (g
+                    .saved / g.amount) * 100);
+                const remaining = Math.max(0, g.amount - g.saved);
                 const cat = catColors[g.category] || catColors['🌟 Diğer'];
                 const daysLeft = Math.ceil((new Date(g.targetDate) - new Date()) / 86400000);
                 let dc = 'safe',
-                    di = '🟢';
-                if (daysLeft <= 30) { dc = 'urgent';
-                    di = '🔴'; } else if (daysLeft <= 90) { dc = 'soon';
+                    di = '🟢'; if (daysLeft <= 7) { dc = 'urgent';
+                    di = '🔴'; } else if (daysLeft <= 21) { dc = 'soon';
                     di = '🟡'; }
                 const tr = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
                 const td = new Date(g.targetDate);
-                return `<div class="goal-card ${g.completed?'completed':''}" id="card-${g.id}">
-                    <div class="goal-header"><div><div class="goal-cat-badge" style="background:${cat.bg};color:${cat.color}">${g.category}</div><div style="margin-top:4px">${[1,2,3].map(i=>`<span style="font-size:11px;color:${i<=g.priority?'var(--accent)':'var(--border)'}">${i<=g.priority?'★':'☆'}</span>`).join('')}</div></div><button class="goal-menu-btn ripple" onclick="openDeleteModal(${g.id})">✕</button></div>
+                const modeLabels = { linear: '📏 Sabit', easy: '🌱 Kolay→Zor', hard: '🔥 Zor→Kolay' };
+                const modeClass = { linear: 'linear', easy: 'easy', hard: 'hard' };
+                let todaySuggested = g.dailyNeed; if (g.schedule && g.currentDay < g.schedule.length) { todaySuggested = g
+                        .schedule[g.currentDay] || g.dailyNeed; } return `
+                <div class="goal-card ${g.completed?'completed':''}" id="card-${g.id}">
+                    <div class="goal-header"><div><div class="goal-cat-badge" style="background:${cat.bg};color:${cat.color}">${g.category}</div><span class="savings-mode-tag ${modeClass[g.savingsMode]||'linear'}">${modeLabels[g.savingsMode]||'Sabit'}</span><div style="margin-top:4px">${[1,2,3].map(i=>`<span style="font-size:11px;color:${i<=g.priority?'var(--accent)':'var(--border)'}">${i<=g.priority?'★':'☆'}</span>`).join('')}</div></div><button class="goal-menu-btn" onclick="openDeleteModal(${g.id})">✕</button></div>
                     <div class="goal-body">${g.completed?'<div class="completed-badge">🏆 TAMAMLANDI</div>':''}<div class="goal-name">${g.name}</div>${g.note?`<div class="goal-note">${g.note}</div>`:''}
                     <div class="progress-row"><span style="font-size:11px;color:var(--muted)">₺${fmt(g.saved)} / ₺${fmt(g.amount)}</span><span class="progress-pct">${pct.toFixed(1)}%</span></div>
                     <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-                    <div class="goal-stats"><div class="goal-stat"><div class="goal-stat-label">Günlük</div><div class="goal-stat-value highlight">₺${fmtDec(g.dailyNeed)}</div></div><div class="goal-stat"><div class="goal-stat-label">Aylık</div><div class="goal-stat-value">₺${fmt(g.monthlyNeed)}</div></div><div class="goal-stat"><div class="goal-stat-label">Kalan</div><div class="goal-stat-value">₺${fmt(Math.max(0,g.amount-g.saved))}</div></div><div class="goal-stat"><div class="goal-stat-label">Süre</div><div class="goal-stat-value">${g.months} Ay</div></div></div>
-                    ${!g.completed?`<div class="savings-row"><input type="number" class="savings-input" id="savinp-${g.id}" placeholder="Birikim ekle (₺)" min="0" inputmode="numeric"><button class="savings-btn ripple" onclick="addSaving(${g.id})">+ Ekle</button></div>`:''}
-                    <div class="goal-deadline ${dc}">${di} ${td.getDate()} ${tr[td.getMonth()]} ${td.getFullYear()} ${!g.completed?`(${daysLeft>0?daysLeft+' gün':'Süre doldu!'})`:''}</div></div></div>`;
-            }).join('');
-            document.querySelectorAll('.goal-card').forEach(card => {
-                card.addEventListener('mousemove', function(e) { const r = this.getBoundingClientRect(), x = e.clientX - r
-                        .left, y = e.clientY - r.top;
-                    this.style.transform =
-                        `perspective(1000px) rotateX(${(y-r.height/2)/r.height*2*-5}deg) rotateY(${(x-r.width/2)/r.width*2*5}deg) translateY(-4px)`; });
-                card.addEventListener('mouseleave', function() { this.style.transform =
-                        'perspective(1000px) rotateX(0) rotateY(0) translateY(0)'; });
-            });
-        }
+                    <div class="goal-stats"><div class="goal-stat"><div class="goal-stat-label">Bugün Önerilen</div><div class="goal-stat-value highlight">₺${fmtDec(todaySuggested)}</div></div><div class="goal-stat"><div class="goal-stat-label">Kalan</div><div class="goal-stat-value">₺${fmt(remaining)}</div></div><div class="goal-stat"><div class="goal-stat-label">Süre</div><div class="goal-stat-value">${g.days} Gün</div></div><div class="goal-stat"><div class="goal-stat-label">Kalan Gün</div><div class="goal-stat-value">${daysLeft>0?daysLeft:0}</div></div></div>
+                    ${!g.completed?`<div class="savings-row"><input type="number" class="savings-input" id="savinp-${g.id}" placeholder="Bugünkü birikim (₺)" min="0" inputmode="numeric" value="${Math.round(todaySuggested)}"><button class="savings-btn" onclick="addSaving(${g.id})">+ Ekle</button></div>`:''}
+                    <div class="goal-deadline ${dc}">${di} Hedef: ${td.getDate()} ${tr[td.getMonth()]} ${td.getFullYear()} ${!g.completed?`(${daysLeft>0?daysLeft+' gün kaldı':'Süre doldu!'})`:''}</div></div></div>`;
+            }).join(''); }
 
-        function addSaving(id) {
-            playSound('click');
-            const val = parseFloat(document.getElementById(`savinp-${id}`).value);
-            if (!val || val <= 0) { showToast('⚠️ Geçerli tutar girin!'); return; }
-            const g = goals.find(x => x.id === id);
-            if (!g) return;
+        // ==================== ADD SAVING ====================
+        function addSaving(id) { playSound('click');
+            const inp = document.getElementById(`savinp-${id}`);
+            const val = parseFloat(inp.value); if (!val || val <= 0) { showToast('⚠️ Geçerli tutar girin!'); return; }
+            const g = goals.find(x => x.id === id); if (!g) return;
             const wasDone = g.completed;
             g.saved = Math.min(g.amount, g.saved + val);
-            const rem = Math.max(0, g.amount - g.saved);
-            const dl = Math.ceil((new Date(g.targetDate) - new Date()) / 86400000);
-            g.dailyNeed = dl > 0 ? rem / dl : 0;
-            g.monthlyNeed = rem / Math.max(1, Math.ceil(dl / 30));
-            g.completed = g.saved >= g.amount;
-            if (g.completed && !wasDone) g.completedAt = new Date().toISOString();
-            document.getElementById(`savinp-${id}`).value = '';
+            g.currentDay = (g.currentDay || 0) + 1;
+            const remaining = Math.max(0, g.amount - g.saved);
+            const daysLeft = Math.max(1, Math.ceil((new Date(g.targetDate) - new Date()) / 86400000)); if (g.schedule && g
+                .currentDay < g.schedule.length) { g.dailyNeed = g.schedule[g.currentDay] || (remaining / daysLeft); } else { g
+                .dailyNeed = remaining / daysLeft; }
+            g.monthlyNeed = g.dailyNeed * 30;
+            g.completed = g.saved >= g.amount; if (g.completed && !wasDone) g.completedAt = new Date().toISOString();
+            inp.value = '';
             save();
+            playerData.totalSaved += val;
+            playerData.missionsCompletedToday++;
+            addXP(XP_SAVING_ADD);
+            checkStreak();
             renderGoals();
             updateStats();
             checkBadges();
-            if (g.completed && !wasDone) { playSound('success');
-                launchConfetti();
-                const c = document.getElementById(`card-${id}`); if (c) { c.classList.add('glitch-active');
-                    setTimeout(() => c.classList.remove('glitch-active'), 500); }
-                showToast(`🏆 "${g.name}" tamamlandı!`); } else showToast(`💰 ₺${fmt(val)} eklendi! Kalan: ₺${fmt(rem)}`);
-        }
+            completeMissionCheck();
+            updateXPBar(); if (g.completed && !wasDone) { playSound('success');
+                playerData.goalsCompleted++;
+                addXP(XP_GOAL_COMPLETE);
+                confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+                savePlayerData();
+                showToast(`🏆 "${g.name}" TAMAMLANDI! (+${XP_GOAL_COMPLETE} XP)`); } else { showToast(
+                    `💰 ₺${fmt(val)} eklendi! (+${XP_SAVING_ADD} XP) • Kalan: ₺${fmt(remaining)}`); } }
 
-        function updateStats() {
-            document.getElementById('stat-total').textContent = goals.length;
+        // ==================== STATS ====================
+        function updateStats() { document.getElementById('stat-total').textContent = goals.length;
             document.getElementById('stat-done').textContent = goals.filter(g => g.completed).length;
-            document.getElementById('stat-amount').textContent = '₺' + fmt(goals.reduce((s, g) => s + g.amount, 0));
-            document.getElementById('stat-daily').textContent = '₺' + fmtDec(goals.filter(g => !g.completed).reduce((s, g) =>
-                s + g.dailyNeed, 0));
-        }
+            document.getElementById('stat-total-saved').textContent = '₺' + fmt(goals.reduce((s, g) => s + g.saved, 0));
+            document.getElementById('stat-streak').innerHTML = `${playerData.streak} ${playerData.streak>2?'<span class="streak-fire">🔥</span>':'🔥'}`; }
 
         function filterCat(f, btn) { playSound('click');
             currentFilter = f;
@@ -1990,29 +1775,30 @@
         document.getElementById('delete-modal').addEventListener('click', function(e) { if (e.target === this)
                 closeDeleteModal(); });
 
-        // ==================== KEYBOARD ====================
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeDeleteModal(); if (document.getElementById('badges-panel').classList.contains(
-                    'open')) toggleBadges();
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeDeleteModal();
                 document.getElementById('chart-modal-overlay').classList.remove('open');
-                closeMusicPopup(); }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault();
-                document.getElementById('inp-name').focus(); }
-            if (e.key === ' ' && document.activeElement === document.body) { e.preventDefault();
-                togglePlayPause(); }
-        });
+                document.getElementById('stats-modal').classList.remove('open');
+                closeMusicPopup(); } if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault();
+                document.getElementById('inp-name').focus(); } if (e.key === ' ' && document.activeElement === document
+                .body) { e.preventDefault();
+                togglePlayPause(); } });
 
-        // ==================== INIT ====================
         function init() {
             updateDate();
             startQuoteCycle();
+            checkStreak();
             renderGoals();
             updateStats();
             renderBadges();
+            renderMissions();
+            updateXPBar();
             loadSavedVolume();
             updatePlayBtn();
             loadYouTubeAPI();
             checkBadges();
+            completeMissionCheck();
+            playerData.totalSaved = goals.reduce((s, g) => s + g.saved, 0);
+            savePlayerData();
         }
         init();
     </script>
